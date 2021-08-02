@@ -36,7 +36,7 @@ namespace TwitterPoc.Controllers
         public IActionResult Unfollow(string username)
         {
             var follower = User.Identity.Name;
-            _usersService.AddFollower(follower, username);
+            _usersService.RemoveFollower(follower, username);
             return Ok();
         }
     }

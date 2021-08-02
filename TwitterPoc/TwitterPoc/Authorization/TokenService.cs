@@ -1,4 +1,5 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -13,6 +14,11 @@ namespace TwitterPoc.Authorization
 {
     public class TokenService : ITokenService
     {
+        private readonly ILogger<TokenService> _logger;
+        public TokenService(ILogger<TokenService> logger)
+        {
+            _logger = logger;
+        }
         private const double EXPIRY_DURATION_MINUTES = 30;
 
         public string BuildToken(string key, string issuer, User user)
@@ -45,8 +51,9 @@ namespace TwitterPoc.Authorization
                     IssuerSigningKey = mySecurityKey,
                 }, out SecurityToken validatedToken);
             }
-            catch
+            catch (Exception e)
             {
+                _logger.LogCritical(e, $"Could not validate token {token}");
                 return false;
             }
             return true;

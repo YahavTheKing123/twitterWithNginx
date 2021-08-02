@@ -21,14 +21,14 @@ namespace TwitterPoc.Controllers
             return Ok();
         }
 
-        [Route("Follow")]
+        [Route("GetFeed")]
         [HttpGet]
         public IActionResult GetFeed(string username)
         {
             return Ok();
         }
 
-        [Route("Follow")]
+        [Route("GetMyFeed")]
         [HttpGet]
         public IActionResult GetMyFeed(string username)
         {

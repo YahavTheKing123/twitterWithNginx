@@ -17,6 +17,8 @@ using TwitterPoc.Authorization;
 using TwitterPoc.Data.Interfaces;
 using TwitterPoc.Data.Repositories;
 using TwitterPoc.Logic;
+using TwitterPoc.Logic.Interfaces;
+using TwitterPoc.Logic.Services;
 
 namespace TwitterPoc
 {
@@ -76,8 +78,15 @@ namespace TwitterPoc
                 };
             });
 
-            services.AddScoped<ITokenService, TokenService>();
-            services.AddScoped<IUsersRepository, UsersRepository>();
+            services.AddScoped<ITokenService, TokenService>()
+                    .AddScoped<IUsersRepository, UsersRepository>()
+                    .AddScoped<IFollowersRepository, FollowersRepository>()
+                    .AddScoped<IMessagesRepository, MessagesRepository>()
+                    .AddScoped<IMessagesRepository, MessagesRepository>()
+                    .AddScoped<IUsersService, UsersService>()
+                    .AddScoped<IFeedsService, FeedsService>()
+
+                    ;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

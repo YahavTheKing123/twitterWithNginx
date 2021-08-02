@@ -13,4 +13,10 @@
     <PackageReference Include="coverlet.collector" Version="3.0.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\TwitterPoc.Data\TwitterPoc.Data.csproj" />
+    <ProjectReference Include="..\TwitterPoc.Logic\TwitterPoc.Logic.csproj" />
+    <ProjectReference Include="..\TwitterPoc\TwitterPoc.csproj" />
+  </ItemGroup>
+
 </Project>
