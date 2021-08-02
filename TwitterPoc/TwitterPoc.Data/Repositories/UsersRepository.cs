@@ -10,24 +10,29 @@ namespace TwitterPoc.Data.Repositories
 {
     public class UsersRepository : IUsersRepository
     {
-        private readonly List<User> users = new List<User>();
+        private readonly List<User> _users = new List<User>();
 
         public UsersRepository()
         {
-            users.Add(new User
+            _users.Add(new User
             {
                 Username = "adi",
                 Password = "123",
             });
-            users.Add(new User
+            _users.Add(new User
             {
                 Username = "michaelsanders",
                 Password = "michael321",
             });
         }
-        public async Task<User> GetUserAsync(string username, string password)
+        public async Task<User> GetAsync(string username)
         {
-            return await Task.Run(() =>users.Where(x => x.Username.ToLower() == username.ToLower() && x.Password == password).FirstOrDefault());
+            return await Task.Run(() =>_users.Where(x => x.Username.ToLower() == username.ToLower()).FirstOrDefault());
+        }
+
+        public async Task AddAsync(User user)
+        {
+            await Task.Run(() => _users.Add(user));
         }
     }
 }

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using TwitterPoc.Data.Interfaces;
 using TwitterPoc.Logic;
+using TwitterPoc.Logic.Interfaces;
 using TwitterPoc.Models;
 
 namespace TwitterPoc.Controllers
@@ -22,15 +24,31 @@ namespace TwitterPoc.Controllers
     {
         private readonly IConfiguration _config;
         private readonly ITokenService _tokenService;
-        private readonly IUsersRepository _usersRepository;
+        private readonly IUsersService _usersService;
         private readonly ILogger<AuthenticationController> _logger;
 
-        public AuthenticationController(IConfiguration config, ITokenService tokenService, IUsersRepository usersRepository, ILogger<AuthenticationController> logger)
+        public AuthenticationController(IConfiguration config, ITokenService tokenService, IUsersService usersService, ILogger<AuthenticationController> logger)
         {
             _tokenService = tokenService;
-            _usersRepository = usersRepository;
+            _usersService = usersService;
             _config = config;
             _logger = logger;
+        }
+
+        [AllowAnonymous]
+        [Route("SignUp")]
+        [HttpPost]
+        public async Task<IActionResult> SignUp(RegisterModel userModel)
+        {
+            _logger.LogInformation($"SignUp request. Username: {userModel?.Username}");
+            if (!ModelState.IsValid)
+            {
+                var modelErrors = JsonConvert.SerializeObject(ModelState.Values.Select(v => v.Errors.FirstOrDefault()));
+                _logger.LogInformation($"SignUp BadRequest. Errors: {modelErrors}");
+                return BadRequest(ModelState);
+            }
+            await _usersService.RegisterAsync(userModel.Username, userModel.Password);
+            return Ok();
         }
 
         [AllowAnonymous]
@@ -38,16 +56,17 @@ namespace TwitterPoc.Controllers
         [HttpPost]
         public async Task<IActionResult> SignIn(LoginModel userModel)
         {
-            _logger.LogInformation("SignIn request.");
+            _logger.LogInformation($"SignIn request. Username: {userModel?.Username}");
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var validUser = await _usersRepository.GetUserAsync(userModel.Username, userModel.Password);
+            var verifiedUser = await _usersService.GetVerifiedUserAsync(userModel.Username, userModel.Password);
 
-            if (validUser != null)
+            if (verifiedUser != null)
             {
-                var generatedToken = _tokenService.BuildToken(_config["Jwt:Key"].ToString(), _config["Jwt:Issuer"].ToString(), validUser);
+                var generatedToken = _tokenService.BuildToken(_config["Jwt:Key"].ToString(), _config["Jwt:Issuer"].ToString(), verifiedUser);
+                Response.Cookies.Append("X-Access-Token", generatedToken, new CookieOptions() { HttpOnly = true, SameSite = SameSiteMode.Strict });
                 if (generatedToken != null)
                 {
                     return Ok(new ResponseModel(true, generatedToken));
@@ -65,11 +84,14 @@ namespace TwitterPoc.Controllers
             }
         }
 
+
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Route("SignOut")]
         [HttpPost]
-        public string SignOut()
+        public new IActionResult SignOut()
         {
+            Response.Cookies.Delete("X-Access-Token");
+            return Ok();
         }
 
 

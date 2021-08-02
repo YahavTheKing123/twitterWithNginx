@@ -7,9 +7,10 @@ using TwitterPoc.Data.Entities;
 
 namespace TwitterPoc.Data.Interfaces
 {
-    public interface IUsersRepository
+    public interface IMessagesRepository
     {
-        Task AddAsync(User user);
-        Task<User> GetAsync(string username);
+        Task Add(Message message);
+        Task<IEnumerable<Message>> Get(string username);
+        Task<IEnumerable<Message>> Get(IEnumerable<string> usernames);
     }
 }

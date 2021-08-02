@@ -9,7 +9,7 @@ namespace TwitterPoc.Logic
 {
     public interface ITokenService
     {
-        string BuildToken(string key, string issuer, User user);
+        string BuildToken(string key, string issuer, Entities.User user);
         bool IsTokenValid(string key, string issuer, string token);
     }
 }

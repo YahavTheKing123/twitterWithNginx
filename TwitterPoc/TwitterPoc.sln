@@ -5,9 +5,11 @@ VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TwitterPoc", "TwitterPoc\TwitterPoc.csproj", "{101B29F0-DB98-4765-A8CF-3E6EC42D46E8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwitterPoc.Logic", "TwitterPoc.Logic\TwitterPoc.Logic.csproj", "{4B09B359-0F19-4925-A74C-501AAA488F8C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TwitterPoc.Logic", "TwitterPoc.Logic\TwitterPoc.Logic.csproj", "{4B09B359-0F19-4925-A74C-501AAA488F8C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwitterPoc.Data", "TwitterPoc.Data\TwitterPoc.Data.csproj", "{11910509-16E2-4BBC-AB79-00C0CD7187A3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TwitterPoc.Data", "TwitterPoc.Data\TwitterPoc.Data.csproj", "{11910509-16E2-4BBC-AB79-00C0CD7187A3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwitterPoc.UnitTests", "TwitterPoc.UnitTests\TwitterPoc.UnitTests.csproj", "{05E4DB3F-9470-4892-A708-62A71C12A2CA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{11910509-16E2-4BBC-AB79-00C0CD7187A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{11910509-16E2-4BBC-AB79-00C0CD7187A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{11910509-16E2-4BBC-AB79-00C0CD7187A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{05E4DB3F-9470-4892-A708-62A71C12A2CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{05E4DB3F-9470-4892-A708-62A71C12A2CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{05E4DB3F-9470-4892-A708-62A71C12A2CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{05E4DB3F-9470-4892-A708-62A71C12A2CA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

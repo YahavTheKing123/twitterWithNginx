@@ -5,11 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 using TwitterPoc.Data.Entities;
 
-namespace TwitterPoc.Data.Interfaces
+namespace TwitterPoc.Logic.Entities
 {
-    public interface IUsersRepository
+    public class Feed
     {
-        Task AddAsync(User user);
-        Task<User> GetAsync(string username);
+        public IEnumerable<Message> Messages { get; set; }
+
+        public Feed()
+        {
+        }
     }
 }

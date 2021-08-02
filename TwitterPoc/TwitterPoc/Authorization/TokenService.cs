@@ -6,8 +6,8 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using TwitterPoc.Data.Entities;
 using TwitterPoc.Logic;
+using TwitterPoc.Logic.Entities;
 
 namespace TwitterPoc.Authorization
 {
