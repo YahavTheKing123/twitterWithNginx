@@ -27,7 +27,7 @@ namespace TwitterPoc.UnitTests.Mocks
         }
         public async Task<User> GetAsync(string username)
         {
-            return await Task.Run(() =>_users.Where(x => x.Username.ToLower() == username.ToLower()).FirstOrDefault());
+            return await Task.Run(() =>_users.Where(x => x.Username == username).FirstOrDefault());
         }
 
         public async Task AddAsync(User user)

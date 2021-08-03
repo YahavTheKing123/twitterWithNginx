@@ -10,46 +10,53 @@ namespace TwitterPoc.UnitTests.Mocks
 {
     public class MessagesRepositoryMock : IMessagesRepository
     {
-        private readonly Dictionary<string, List<Message>> _messages = new Dictionary<string, List<Message>>();
+        private readonly Dictionary<string, MessagesSet> _messages = new Dictionary<string, MessagesSet>();
 
-        public async Task Add(Message message)
+        public async Task Add(string username, Message message)
         {
-
             await Task.FromResult(0);
 
-            var username = message.Username;
             if (!_messages.ContainsKey(username))
             {
-                _messages.Add(username, new List<Message>());
+                var messagesSet = new MessagesSet()
+                {
+                    Messages = new List<Message>(),
+                    Username = username
+                };
+                _messages.Add(username, messagesSet);
             }
-            _messages[username].Add(message);
+            _messages[username].Messages.Add(message);
         }
 
-        public async Task<IEnumerable<Message>> Get(string username)
+        public async Task<IEnumerable<MessagesSet>> Get(string username, bool exactMatch)
         {
             await Task.FromResult(0);
 
-            if (_messages.ContainsKey(username))
-            {
-                return _messages[username];
-            }
-            return Enumerable.Empty<Message>();
-        }
-
-        public async Task<IEnumerable<Message>> Get(IEnumerable<string> usernames)
-        {
-            await Task.FromResult(0);
-            var messages = new List<Message>();
-            foreach (var username in usernames)
+            if (exactMatch)
             {
                 if (_messages.ContainsKey(username))
                 {
-                    messages.AddRange(_messages[username]);
+                    return new[] { _messages[username] };
                 }
+            }
+            else
+            {
+                return _messages.Where(kvp => kvp.Key.Contains(username)).Select(kvp => kvp.Value);
+            }
+
+            return Enumerable.Empty<MessagesSet>();
+        }
+
+        public async Task<IEnumerable<MessagesSet>> Get(IEnumerable<string> usernames, bool exactMatch)
+        {
+            await Task.FromResult(0);
+            var messages = new List<MessagesSet>();
+            foreach (var username in usernames)
+            {
+                messages.AddRange(await Get(username, exactMatch));
             }
 
             return messages;
         }
-
     }
 }

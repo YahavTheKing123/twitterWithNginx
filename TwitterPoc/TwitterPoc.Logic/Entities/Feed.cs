@@ -9,10 +9,21 @@ namespace TwitterPoc.Logic.Entities
 {
     public class Feed
     {
-        public IEnumerable<Message> Messages { get; set; }
+        public List<Message> Messages { get; set; }
 
         public Feed()
         {
+            Messages = new List<Message>();
+        }
+
+        public void Add(IEnumerable<MessagesSet> messageSets)
+        {
+            foreach (var set in messageSets)
+            {
+                var username = set.Username;
+                var messagesToAdd = set.Messages.Select(m => new Message(username, m.Content, m.Time));
+                this.Messages.AddRange(messagesToAdd);
+            }
         }
     }
 }

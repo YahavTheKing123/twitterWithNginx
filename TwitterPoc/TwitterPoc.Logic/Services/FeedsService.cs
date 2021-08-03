@@ -23,31 +23,29 @@ namespace TwitterPoc.Logic.Services
 
         public async Task AddMessage(string username, string message)
         {
-            var messageToAdd = new Message() {
+            var messageToAdd = new Data.Entities.Message() {
                 Content = message,
-                Username = username,
                 Time = DateTime.UtcNow,
             };
-            await _messagesRepository.Add(messageToAdd);
+            await _messagesRepository.Add(username, messageToAdd);
         }
 
         public async Task<Feed> GetGlobalFeed(string followeePartialUsername)
         {
-            var messages = await _messagesRepository.Get(followeePartialUsername);
-            Feed feed = new Feed()
-            {
-                Messages = messages.ToList()
-            };
+            var messageSets = await _messagesRepository.Get(followeePartialUsername, false);
+            Feed feed = new Feed();
+            feed.Add(messageSets);
             return feed;
         }
 
         public async Task<Feed> GetUserFeed(string currentUsername, string followeePartialUsername)
         {
             var followees = await _followersRepository.Get(currentUsername);
-            var messages = await _messagesRepository.Get(followees);
-            return new Feed() { 
-                Messages = messages.ToList()
-            };
+            var relevantFollowees = followees.Where(f => f.Contains(followeePartialUsername)).ToArray();
+            var messageSets = await _messagesRepository.Get(relevantFollowees, true);
+            var feed = new Feed();
+            feed.Add(messageSets);
+            return feed;
         }
     }
 }

@@ -1,54 +1,95 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using MongoDB.Driver;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TwitterPoc.Data.Entities;
 using TwitterPoc.Data.Interfaces;
+using TwitterPoc.Data.Settings;
 
 namespace TwitterPoc.Data.Repositories
 {
     public class MessagesRepository : IMessagesRepository
     {
-        private readonly Dictionary<string, List<Message>> _messages = new Dictionary<string, List<Message>>();
+        private readonly IMongoCollection<MessagesSet> _messages;
+        private readonly ILogger<MessagesRepository> _logger;
 
-        public async Task Add(Message message)
+        public MessagesRepository(ITwitterPocDatabaseSettings settings, ILogger<MessagesRepository> logger)
         {
+            _logger = logger;
+            var client = new MongoClient(settings.ConnectionString);
+            var database = client.GetDatabase(settings.DatabaseName);
 
-            await Task.FromResult(0);
-
-            var username = message.Username;
-            if (!_messages.ContainsKey(username))
-            {
-                _messages.Add(username, new List<Message>());
-            }
-            _messages[username].Add(message);
+            _messages = database.GetCollection<MessagesSet>("messages");
         }
 
-        public async Task<IEnumerable<Message>> Get(string username)
+        public async Task Add(string username, Message message)
         {
-            await Task.FromResult(0);
-
-            if (_messages.ContainsKey(username))
+            try
             {
-                return _messages[username];
+                var filter = Builders<MessagesSet>.Filter.Eq(e => e.Username, username);
+
+                var update = Builders<MessagesSet>.Update.Push(e => e.Messages, message);
+
+                await _messages.FindOneAndUpdateAsync(filter, update);
             }
-            return Enumerable.Empty<Message>();
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error on adding a message. Username: {username}. Time of message: {message?.Time}. Content: {message?.Content}");
+                throw;
+            }
+
         }
 
-        public async Task<IEnumerable<Message>> Get(IEnumerable<string> usernames)
+        public async Task<IEnumerable<MessagesSet>> Get(string username, bool exactMatch)
         {
-            await Task.FromResult(0);
-            var messages = new List<Message>();
-            foreach (var username in usernames)
+            try
             {
-                if (_messages.ContainsKey(username))
+                IAsyncCursor<MessagesSet> result;
+                if (exactMatch)
                 {
-                    messages.AddRange(_messages[username]);
+                    result = await _messages.FindAsync(m => m.Username == username);
                 }
+                else
+                {
+                    result = await _messages.FindAsync(m => m.Username.Contains(username));
+                }
+                return await result.ToListAsync();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error on getting messages. Username: {username}.");
+                throw;
             }
 
-            return messages;
+        }
+
+        public async Task<IEnumerable<MessagesSet>> Get(IEnumerable<string> usernames, bool exactMatch)
+        {
+            try
+            {
+                var usernamesHashSet = usernames.ToHashSet();
+                IAsyncCursor<MessagesSet> result;
+                if (exactMatch)
+                {
+                    result = await _messages.FindAsync(m => usernamesHashSet.Contains(m.Username));
+                }
+                else
+                {
+                    result = await _messages.FindAsync(m => usernamesHashSet.Any(username => m.Username.Contains(username)));
+                }
+
+                return await result.ToListAsync();
+            }
+            catch (Exception e)
+            {
+                var usernamesAsString = string.Join(", ", usernames == null ? new string[0] : usernames.ToArray());
+                _logger.LogError(e, $"Error on getting messages. Usernames: {usernamesAsString}.");
+                throw;
+            }
+
         }
 
     }

@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
@@ -16,6 +17,7 @@ using System.Threading.Tasks;
 using TwitterPoc.Authorization;
 using TwitterPoc.Data.Interfaces;
 using TwitterPoc.Data.Repositories;
+using TwitterPoc.Data.Settings;
 using TwitterPoc.Logic;
 using TwitterPoc.Logic.Interfaces;
 using TwitterPoc.Logic.Services;
@@ -78,6 +80,12 @@ namespace TwitterPoc
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
                 };
             });
+
+            services.Configure<TwitterPocDatabaseSettings>(
+                Configuration.GetSection(nameof(TwitterPocDatabaseSettings)));
+
+            services.AddSingleton<ITwitterPocDatabaseSettings>(sp =>
+                sp.GetRequiredService<IOptions<TwitterPocDatabaseSettings>>().Value);
 
             services.AddScoped<ITokenService, TokenService>()
                     .AddScoped<IUsersRepository, UsersRepository>()

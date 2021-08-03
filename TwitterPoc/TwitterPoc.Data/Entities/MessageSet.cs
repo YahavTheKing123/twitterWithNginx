@@ -8,12 +8,17 @@ using System.Threading.Tasks;
 
 namespace TwitterPoc.Data.Entities
 {
-    public class User
+    public class Message
+    {
+        public string Content { get; set; }
+        public DateTime Time { get; set; }
+    }
+
+    public class MessagesSet
     {
         [BsonId]
         [BsonRepresentation(BsonType.String)]
         public string Username { get; set; }
-        public string Password { get; set; }
-        public string PasswordSalt { get; set; }
+        public List<Message> Messages { get; set; }
     }
 }
