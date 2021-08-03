@@ -19,6 +19,7 @@ using TwitterPoc.Data.Repositories;
 using TwitterPoc.Logic;
 using TwitterPoc.Logic.Interfaces;
 using TwitterPoc.Logic.Services;
+using TwitterPoc.Middlewares;
 
 namespace TwitterPoc
 {
@@ -90,7 +91,7 @@ namespace TwitterPoc
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
         {
             if (env.IsDevelopment())
             {
@@ -102,6 +103,8 @@ namespace TwitterPoc
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.ConfigureExceptionHandler(logger);
 
             app.UseEndpoints(endpoints =>
             {
