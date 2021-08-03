@@ -26,7 +26,7 @@ namespace TwitterPoc.Controllers
             _logger = logger;
         }
 
-        [Route("Follow")]
+        [Route("PostMessage")]
         [HttpPost]
         public async Task<IActionResult> PostMessage([FromBody]PostedMessageModel model)
         {

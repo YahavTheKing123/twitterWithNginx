@@ -30,52 +30,13 @@ namespace TwitterPoc.Controllers
         private readonly IUsersService _usersService;
         private readonly ILogger<AuthenticationController> _logger;
 
-        private readonly ITwitterPocDatabaseSettings _settings;
-
-        public AuthenticationController(IConfiguration config, ITokenService tokenService, IUsersService usersService, ILogger<AuthenticationController> logger, ITwitterPocDatabaseSettings settings)
+        public AuthenticationController(IConfiguration config, ITokenService tokenService, IUsersService usersService, ILogger<AuthenticationController> logger)
         {
             _tokenService = tokenService;
             _usersService = usersService;
             _config = config;
             _logger = logger;
-
-            _settings = settings;
         }
-
-
-
-        [AllowAnonymous]
-        [Route("Test")]
-        [HttpGet]
-        public async Task<IActionResult> Test()
-        {
-            TestRepository repository = new TestRepository(_settings);
-
-            try
-            {
-                var user = await repository.CreateAsync(new Data.Entities.User() { Password = "1232", PasswordSalt = "sssss", Username = "adi" });
-                _logger.LogInformation(JsonConvert.SerializeObject(user));
-            }
-            catch (Exception e)
-            {
-                _logger.LogCritical(e, "");
-            }
-
-            try
-            {
-                var users = await repository.GetAsync();
-                _logger.LogInformation(JsonConvert.SerializeObject(users));
-
-                return Ok(users);
-            }
-            catch (Exception e)
-            {
-                _logger.LogCritical(e, "");
-            }
-            return Ok();
-
-        }
-
 
         [AllowAnonymous]
         [Route("SignUp")]

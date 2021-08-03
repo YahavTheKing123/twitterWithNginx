@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -79,7 +80,9 @@ namespace TwitterPoc
                     ValidAudience = Configuration["Jwt:Issuer"],
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
                 };
-            });
+            })
+                .AddCookie(cfg => cfg.SlidingExpiration = true)
+                ;
 
             services.Configure<TwitterPocDatabaseSettings>(
                 Configuration.GetSection(nameof(TwitterPocDatabaseSettings)));
