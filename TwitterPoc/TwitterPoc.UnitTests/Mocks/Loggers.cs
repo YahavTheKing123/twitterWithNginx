@@ -5,10 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TwitterPoc.Authorization;
+using TwitterPoc.Logic.Services;
 
 namespace TwitterPoc.UnitTests.Mocks
 {
     public partial class LoggerMock : ILogger<TokenService> { }
+    public partial class LoggerMock : ILogger<UsersService> { }
     public partial class LoggerMock : ILogger
     {
         class DisposableClass : IDisposable

@@ -11,7 +11,7 @@ namespace TwitterPoc.UnitTests
         [TestMethod]
         public void BuildTokenAndTokenValidationTest()
         {
-            const string key = "adi123";
+            const string key = "SDG325345ssddsggg435@3#dgsdg35";
             const string issuer = "issuer";
 
             ITokenService service = new TokenService(new LoggerMock());

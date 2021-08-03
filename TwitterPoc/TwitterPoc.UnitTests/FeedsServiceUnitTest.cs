@@ -14,12 +14,13 @@ namespace TwitterPoc.UnitTests
     {
         
         [TestMethod]
-        [Timeout(5000)] //10 seconds timeout for message time measurement
+        [Timeout(5000)] //5 seconds timeout for message time measurement
         public async Task GetMyFeedTest()
         {
             const string user1 = "user1";
             const string user2 = "user2";
             const string user3 = "other3";
+            var timeOfTest = DateTime.UtcNow;
 
             const string someMessage = "Some Message";
             const string messageOfUser3 = "Some Message of User 3";
@@ -43,7 +44,8 @@ namespace TwitterPoc.UnitTests
 
             Assert.AreEqual(someMessage, singleMessage.Content);
             Assert.AreEqual(user1, singleMessage.Username);
-            Assert.IsTrue(singleMessage.Time <= DateTime.UtcNow && singleMessage.Time > DateTime.UtcNow.AddSeconds(5));
+
+            Assert.IsTrue(singleMessage.Time <= timeOfTest.AddSeconds(1) && singleMessage.Time > timeOfTest.AddSeconds(-1));
 
         }
         

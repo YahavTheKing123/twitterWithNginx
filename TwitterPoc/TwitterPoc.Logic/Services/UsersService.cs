@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,10 +14,13 @@ namespace TwitterPoc.Logic.Services
     {
         private readonly IFollowersRepository _followersRepository;
         private readonly IUsersRepository _usersRepository;
-        public UsersService(IUsersRepository usersRepository, IFollowersRepository followersRepository)
+        private readonly ILogger _logger;
+
+        public UsersService(IUsersRepository usersRepository, IFollowersRepository followersRepository, ILogger<UsersService> logger)
         {
             _usersRepository = usersRepository;
             _followersRepository = followersRepository;
+            _logger = logger;
         }
 
         public async Task RegisterAsync(string username, string password)
@@ -29,11 +33,22 @@ namespace TwitterPoc.Logic.Services
         public async Task<Entities.User> GetVerifiedUserAsync(string username, string password)
         {
             var user = await _usersRepository.GetAsync(username);
-            if (BCrypt.Net.BCrypt.Verify(password, user.Password))
+            if (user == null)
             {
-                return new Entities.User() {Username = user.Username };
+                _logger.LogInformation($"User {username} does not exist");
+                return null;
             }
-            return null;
+            else if (BCrypt.Net.BCrypt.Verify(password, user.Password))
+            {
+                _logger.LogInformation($"User {username} has been verified.");
+                return new Entities.User() { Username = user.Username };
+            }
+            else
+            {
+                _logger.LogInformation($"User {username} exists but has not been verified with the supplied password.");
+                return null;
+            }
+
         }
 
         public async Task AddFollower(string follower, string followee)
