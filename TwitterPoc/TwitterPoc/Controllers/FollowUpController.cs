@@ -10,6 +10,7 @@ using TwitterPoc.Logic.Interfaces;
 
 namespace TwitterPoc.Controllers
 {
+    
     [Route("api/[controller]")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
@@ -31,7 +32,7 @@ namespace TwitterPoc.Controllers
             return Ok();
         }
 
-        [Route("Follow")]
+        [Route("Unfollow")]
         [HttpPost]
         public IActionResult Unfollow(string username)
         {
@@ -40,4 +41,5 @@ namespace TwitterPoc.Controllers
             return Ok();
         }
     }
+    
 }

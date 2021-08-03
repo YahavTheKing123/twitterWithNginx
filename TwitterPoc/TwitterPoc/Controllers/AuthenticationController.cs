@@ -20,6 +20,7 @@ namespace TwitterPoc.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class AuthenticationController : ControllerBase
     {
         private readonly IConfiguration _config;
@@ -85,7 +86,6 @@ namespace TwitterPoc.Controllers
         }
 
 
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Route("SignOut")]
         [HttpPost]
         public new IActionResult SignOut()
