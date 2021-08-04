@@ -14,16 +14,6 @@ namespace TwitterPoc.UnitTests.Mocks
 
         public UsersRepositoryMock()
         {
-            _users.Add(new User
-            {
-                Username = "adi",
-                Password = "123",
-            });
-            _users.Add(new User
-            {
-                Username = "michaelsanders",
-                Password = "michael321",
-            });
         }
         public async Task<User> GetAsync(string username)
         {
@@ -33,6 +23,12 @@ namespace TwitterPoc.UnitTests.Mocks
         public async Task AddAsync(User user)
         {
             await Task.Run(() => _users.Add(user));
+        }
+
+        public async Task<bool> UserExists(string username)
+        {
+            await Task.FromResult(0);
+            return _users.Any(u => u.Username == username);
         }
     }
 }

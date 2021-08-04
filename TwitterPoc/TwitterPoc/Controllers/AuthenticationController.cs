@@ -11,6 +11,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using TwitterPoc.Data.Exceptions;
 using TwitterPoc.Data.Interfaces;
 using TwitterPoc.Data.Repositories;
 using TwitterPoc.Data.Settings;
@@ -50,8 +51,19 @@ namespace TwitterPoc.Controllers
                 _logger.LogInformation($"SignUp BadRequest. Errors: {modelErrors}");
                 return BadRequest(ModelState);
             }
-            await _usersService.RegisterAsync(userModel.Username, userModel.Password);
-            return Ok();
+            try
+            {
+                await _usersService.RegisterAsync(userModel.Username, userModel.Password);
+                _logger.LogInformation($"SignUp - Username: {userModel?.Username}. Successfully registered .");
+            }
+            catch (UsernameAlreadyExistsException e)
+            {
+                var message = $"Username '{e.Username}' is not available.";
+                _logger.LogInformation($"SignUp - {message}");
+                return Ok(new ResponseModel(false, $"Username '{e.Username}' is not available."));
+            }
+
+            return Ok(new ResponseModel(true, string.Empty));
         }
 
         [AllowAnonymous]

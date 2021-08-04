@@ -1,7 +1,9 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using TwitterPoc.Authorization;
+using TwitterPoc.Data.Exceptions;
 using TwitterPoc.Logic;
 using TwitterPoc.Logic.Services;
 using TwitterPoc.UnitTests.Mocks;
@@ -22,6 +24,26 @@ namespace TwitterPoc.UnitTests
             var user = await usersService.GetVerifiedUserAsync(username, password);
             Assert.IsNotNull(user);
             Assert.AreEqual(username, user.Username);
+        }
+
+        [TestMethod]
+        public async Task RegistrationWhenUserAlreadyExists()
+        {
+            var username = "adi1111";
+            var usersService = new UsersService(new UsersRepositoryMock(), new FollowersRepositoryMock(), new MessagesRepositoryMock(), new LoggerMock());
+            await usersService.RegisterAsync(username, "112312");
+
+            try
+            {
+                await usersService.RegisterAsync(username, "111112");
+            }
+            catch (Exception e)
+            {
+                Assert.IsTrue(e is UsernameAlreadyExistsException);
+                return;
+            }
+            throw new Exception("It was expected that a UsernameAlreadyExistsException would be thrown");
+         
         }
 
         [TestMethod]

@@ -11,5 +11,7 @@ namespace TwitterPoc.Data.Interfaces
     {
         Task AddAsync(User user);
         Task<User> GetAsync(string username);
+
+        Task<bool> UserExists(string username);
     }
 }

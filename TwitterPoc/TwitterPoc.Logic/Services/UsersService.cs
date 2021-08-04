@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TwitterPoc.Data.Entities;
+using TwitterPoc.Data.Exceptions;
 using TwitterPoc.Data.Interfaces;
 using TwitterPoc.Logic.Interfaces;
 
@@ -28,13 +29,20 @@ namespace TwitterPoc.Logic.Services
 
         public async Task RegisterAsync(string username, string password)
         {
+
             var salt = BCrypt.Net.BCrypt.GenerateSalt();
             var hash = BCrypt.Net.BCrypt.HashPassword(password, salt);
+            if (await _usersRepository.UserExists(username))
+            {
+                throw new UsernameAlreadyExistsException(username);
+            }
             await _usersRepository.AddAsync(new User() { Username = username, Password = hash, PasswordSalt = salt });
             await Task.WhenAll(
                 _messagesRepository.Add(username, true),
                 _followersRepository.Add(username, true)
                 );
+            
+
         }
 
         public async Task<Entities.User> GetVerifiedUserAsync(string username, string password)
