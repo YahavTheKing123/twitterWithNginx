@@ -1,5 +1,6 @@
-<div class="col-md-12">
-    <div class="card card-container">
+<div class="col-md-12 component-padding">
+  <h1>Sign Up</h1>
+    <div>
       <form
         *ngIf="!isSuccessful"
         name="form"
@@ -57,7 +58,7 @@
       </form>
   
       <div class="alert alert-success" *ngIf="isSuccessful">
-        Your registration is successful!
+        Success! You may now sign-in.
       </div>
     </div>
   </div>

@@ -1,10 +1,6 @@
-<div class="col-md-12">
-    <div class="card card-container">
-      <img
-        id="profile-img"
-        src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
-        class="profile-img-card"
-      />
+<div class="col-md-12 component-padding">
+  <h1>Log In</h1>
+    <div>
       <form
         *ngIf="!isLoggedIn"
         name="form"
@@ -69,7 +65,7 @@
       </form>
   
       <div class="alert alert-success" *ngIf="isLoggedIn">
-        Logged in as {{ roles }}.
+        Logged in!
       </div>
     </div>
   </div>

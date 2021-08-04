@@ -62,7 +62,7 @@ namespace TwitterPoc.Controllers
             {
                 var message = $"Username '{e.Username}' is not available.";
                 _logger.LogInformation($"SignUp - {message}");
-                return Ok(new ResponseModel(false, $"Username '{e.Username}' is not available."));
+                return Conflict(new ResponseModel(false, $"Username '{e.Username}' is not available."));
             }
 
             return Ok(new ResponseModel(true, string.Empty));
@@ -99,14 +99,15 @@ namespace TwitterPoc.Controllers
             }
             else
             {
-                return Ok(new ResponseModel(false, "Username or password are not correct"));
+                return Forbid();
             }
         }
 
 
         [Route("SignOut")]
         [HttpPost]
-        public new IActionResult SignOut()
+        [AllowAnonymous]
+        public IActionResult Logout()
         {
             Response.Cookies.Delete("X-Access-Token");
             return Ok();
