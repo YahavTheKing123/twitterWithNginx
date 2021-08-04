@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../_services/auth.service';
+import { UtilitiesService } from '../_services/utilities.service';
 
 @Component({
   selector: 'app-register',
@@ -16,7 +17,7 @@ export class RegisterComponent implements OnInit {
   isSignUpFailed = false;
   errorMessage = '';
 
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService, private utilitiesService: UtilitiesService) { }
 
   ngOnInit(): void {
   }
@@ -31,23 +32,7 @@ export class RegisterComponent implements OnInit {
         this.isSignUpFailed = false;
       },
       err => {
-        console.log(err);
-        if (err.status == 400 && err.error && err.error.errors)
-        {
-           var modelErrors = err.error.errors;
-           var key = Object.keys(modelErrors)[0];
-           var value = modelErrors[key];
-           this.errorMessage = key + ': ' + value;
-        }
-        else if (err.error.message)
-        {
-           this.errorMessage = err.error.message;
-        }
-        else
-        {
-          this.errorMessage = err.error.Message;
-        }
-
+        this.errorMessage = this.utilitiesService.getErrorMessage(err);
         this.isSignUpFailed = true;
       }
     );
