@@ -14,7 +14,7 @@ namespace TwitterPoc.Models
 
         [Required]
         [StringLength(18, ErrorMessage = "The {0} must be at least {2} characters long, but less than {1}.", MinimumLength = 6)]
-        [RegularExpression(@"^((?=.*[a-z])(?=.*[A-Z])(?=.*\d)).+$")]
+        //[RegularExpression(@"^((?=.*[a-z])(?=.*[A-Z])(?=.*\d)).+$")]
         [DataType(DataType.Password)]
         public string Password { get; set; }
     }

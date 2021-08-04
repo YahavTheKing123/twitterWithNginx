@@ -45,12 +45,14 @@ namespace TwitterPoc.Controllers
         public async Task<IActionResult> SignUp(RegisterModel userModel)
         {
             _logger.LogInformation($"SignUp request. Username: {userModel?.Username}");
+            /*
             if (!ModelState.IsValid)
             {
                 var modelErrors = JsonConvert.SerializeObject(ModelState.Values.Select(v => v.Errors.FirstOrDefault()));
                 _logger.LogInformation($"SignUp BadRequest. Errors: {modelErrors}");
                 return BadRequest(ModelState);
             }
+            */
             try
             {
                 await _usersService.RegisterAsync(userModel.Username, userModel.Password);
@@ -72,10 +74,12 @@ namespace TwitterPoc.Controllers
         public async Task<IActionResult> SignIn(LoginModel userModel)
         {
             _logger.LogInformation($"SignIn request. Username: {userModel?.Username}");
+            /*
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+            */
             var verifiedUser = await _usersService.GetVerifiedUserAsync(userModel.Username, userModel.Password);
 
             if (verifiedUser != null)

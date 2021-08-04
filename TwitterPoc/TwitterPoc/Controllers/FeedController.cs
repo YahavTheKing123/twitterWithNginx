@@ -30,11 +30,13 @@ namespace TwitterPoc.Controllers
         [HttpPost]
         public async Task<IActionResult> PostMessage([FromBody]PostedMessageModel model)
         {
+            /*
             if (!ModelState.IsValid)
             {
                 _logger.LogInformation("PostMessage - invalid message: " + model?.MessageBody);
                 return BadRequest(ModelState);
             }
+            */
             await _feedsService.AddMessage(User.Identity.Name, model.MessageBody);
             return Ok();
         }
