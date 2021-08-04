@@ -25,8 +25,30 @@ namespace TwitterPoc.Data.Repositories
 
             _followers = database.GetCollection<UserFollowees>("followers");
         }
-        
-        
+
+        public async Task Add(string follower, bool ignoreKeyDuplication)
+        {
+            try
+            {
+                await _followers.InsertOneAsync(new UserFollowees() { Username = follower, Followees = new List<string>() });
+            }
+            catch (Exception e)
+            {
+                if (ignoreKeyDuplication && e is MongoDuplicateKeyException)
+                {
+                    //Ignored using an exception Because a duplicate key is not a common scenario here,
+                    //then it is better to insert and get a failure,
+                    //than to check it on every user insertion 
+                    _logger.LogInformation($"A duplicate key exception has been thrown for user {follower}, and is ignored.");
+                }
+                else
+                {
+                    _logger.LogError(e, $"Error on adding a user. Username: {follower}.");
+                    throw;
+                }
+            }
+
+        }
 
         public async Task Add(string follower, string followee)
         {

@@ -43,6 +43,30 @@ namespace TwitterPoc.Data.Repositories
 
         }
 
+        public async Task Add(string username, bool ignoreKeyDuplication)
+        {
+            try
+            {
+                await _messages.InsertOneAsync(new MessagesSet() { Username = username, Messages = new List<Message>() });
+            }
+            catch (Exception e)
+            {
+                if (ignoreKeyDuplication && e is MongoDuplicateKeyException)
+                {
+                    //Ignored using an exception Because a duplicate key is not a common scenario here,
+                    //then it is better to insert and get a failure,
+                    //than to check it on every user insertion 
+                    _logger.LogInformation($"A duplicate key exception has been thrown for user {username}, and is ignored.");
+                }
+                else
+                {
+                    _logger.LogError(e, $"Error on adding a user. Username: {username}.");
+                    throw;
+                }
+            }
+
+        }
+
         public async Task<IEnumerable<MessagesSet>> Get(string username, bool exactMatch)
         {
             try

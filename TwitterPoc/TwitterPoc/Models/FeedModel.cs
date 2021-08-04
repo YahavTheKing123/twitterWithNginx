@@ -20,7 +20,7 @@ namespace TwitterPoc.Models
 
         public FeedModel(Feed feed)
         {
-            feed.Messages.Select(m => new MessageModel(m.Username, m.Content, m.Time));
+            Messages = feed.Messages.Select(m => new MessageModel(m.Username, m.Content, m.Time));
         }
     }
 }

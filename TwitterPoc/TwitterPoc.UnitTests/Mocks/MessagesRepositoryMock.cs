@@ -16,16 +16,20 @@ namespace TwitterPoc.UnitTests.Mocks
         {
             await Task.FromResult(0);
 
-            if (!_messages.ContainsKey(username))
+            if (_messages.ContainsKey(username))
             {
-                var messagesSet = new MessagesSet()
-                {
-                    Messages = new List<Message>(),
-                    Username = username
-                };
-                _messages.Add(username, messagesSet);
+                _messages[username].Messages.Add(message);
             }
-            _messages[username].Messages.Add(message);
+        }
+
+        public async Task Add(string username, bool ignoreKeyDuplication)
+        {
+            await Task.FromResult(0);
+            if (ignoreKeyDuplication && _messages.ContainsKey(username))
+            {
+                return;
+            }
+            _messages.Add(username, new MessagesSet() { Username = username, Messages = new List<Message>() });
         }
 
         public async Task<IEnumerable<MessagesSet>> Get(string username, bool exactMatch)

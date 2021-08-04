@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,10 +15,12 @@ namespace TwitterPoc.Logic.Services
     {
         private readonly IFollowersRepository _followersRepository;
         private readonly IUsersRepository _usersRepository;
+        private readonly IMessagesRepository _messagesRepository;
         private readonly ILogger _logger;
 
-        public UsersService(IUsersRepository usersRepository, IFollowersRepository followersRepository, ILogger<UsersService> logger)
+        public UsersService(IUsersRepository usersRepository, IFollowersRepository followersRepository, IMessagesRepository messagesRepository, ILogger<UsersService> logger)
         {
+            _messagesRepository = messagesRepository;
             _usersRepository = usersRepository;
             _followersRepository = followersRepository;
             _logger = logger;
@@ -28,6 +31,10 @@ namespace TwitterPoc.Logic.Services
             var salt = BCrypt.Net.BCrypt.GenerateSalt();
             var hash = BCrypt.Net.BCrypt.HashPassword(password, salt);
             await _usersRepository.AddAsync(new User() { Username = username, Password = hash, PasswordSalt = salt });
+            await Task.WhenAll(
+                _messagesRepository.Add(username, true),
+                _followersRepository.Add(username, true)
+                );
         }
 
         public async Task<Entities.User> GetVerifiedUserAsync(string username, string password)

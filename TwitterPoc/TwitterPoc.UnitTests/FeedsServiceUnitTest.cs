@@ -14,12 +14,13 @@ namespace TwitterPoc.UnitTests
     {
         
         [TestMethod]
-        [Timeout(5000)] //5 seconds timeout for message time measurement
+        [Timeout(1115000)] //5 seconds timeout for message time measurement
         public async Task GetMyFeedTest()
         {
             const string user1 = "user1";
             const string user2 = "user2";
             const string user3 = "other3";
+            const string somePassword = "Aa132442";
             var timeOfTest = DateTime.UtcNow;
 
             const string someMessage = "Some Message";
@@ -27,11 +28,14 @@ namespace TwitterPoc.UnitTests
             var usersRepositoryMock = new UsersRepositoryMock();
             var followersRepositoryMock = new FollowersRepositoryMock();
             var messagesRepositoryMock = new MessagesRepositoryMock();
+            var usersService = new UsersService(usersRepositoryMock, followersRepositoryMock, messagesRepositoryMock, new LoggerMock());
             var feedsService = new FeedsService(messagesRepositoryMock, followersRepositoryMock);
 
             await Task.WhenAll(
-                usersRepositoryMock.AddAsync(new Data.Entities.User() { Username = user1 }),
-                usersRepositoryMock.AddAsync(new Data.Entities.User() { Username = user2 }),
+                usersService.RegisterAsync(user1, somePassword),
+                usersService.RegisterAsync(user2, somePassword)
+            );
+            await Task.WhenAll(
                 followersRepositoryMock.Add(user2, user1),
                 feedsService.AddMessage(user1, someMessage),
                 feedsService.AddMessage(user3, messageOfUser3)
@@ -58,18 +62,23 @@ namespace TwitterPoc.UnitTests
             const string user3 = "user3";
             const string user4 = "user4";
             const string someMessage = "Some Message @";
+            const string somePassword = "Aa132442";
 
             var timeOfTest = DateTime.UtcNow;
             var usersRepositoryMock = new UsersRepositoryMock();
             var followersRepositoryMock = new FollowersRepositoryMock();
             var messagesRepositoryMock = new MessagesRepositoryMock();
+            var usersService = new UsersService(usersRepositoryMock, followersRepositoryMock, messagesRepositoryMock, new LoggerMock());
             var feedsService = new FeedsService(messagesRepositoryMock, followersRepositoryMock);
 
             await Task.WhenAll(
-                usersRepositoryMock.AddAsync(new Data.Entities.User() { Username = user1 }),
-                usersRepositoryMock.AddAsync(new Data.Entities.User() { Username = user2 }),
-                usersRepositoryMock.AddAsync(new Data.Entities.User() { Username = user3 }),
-                usersRepositoryMock.AddAsync(new Data.Entities.User() { Username = user4 }),
+                usersService.RegisterAsync(user1, somePassword),
+                usersService.RegisterAsync(user2, somePassword),
+                usersService.RegisterAsync(user3, somePassword),
+                usersService.RegisterAsync(user4, somePassword)
+                );
+
+            await Task.WhenAll(
                 feedsService.AddMessage(user1, someMessage + user1),
                 feedsService.AddMessage(user2, someMessage + user2),
                 feedsService.AddMessage(user3, someMessage + user3),

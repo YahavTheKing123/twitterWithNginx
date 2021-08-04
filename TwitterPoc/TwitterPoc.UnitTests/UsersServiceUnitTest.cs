@@ -17,7 +17,7 @@ namespace TwitterPoc.UnitTests
         {
             var username = "adi1111";
             var password = "123456";
-            var usersService = new UsersService(new UsersRepositoryMock(), new FollowersRepositoryMock(), new LoggerMock());
+            var usersService = new UsersService(new UsersRepositoryMock(), new FollowersRepositoryMock(), new MessagesRepositoryMock(), new LoggerMock());
             await usersService.RegisterAsync(username, password);
             var user = await usersService.GetVerifiedUserAsync(username, password);
             Assert.IsNotNull(user);
@@ -29,7 +29,7 @@ namespace TwitterPoc.UnitTests
         {
             var username = "adi1111";
             var password = "123456";
-            var usersService = new UsersService(new UsersRepositoryMock(), new FollowersRepositoryMock(), new LoggerMock());
+            var usersService = new UsersService(new UsersRepositoryMock(), new FollowersRepositoryMock(), new MessagesRepositoryMock(), new LoggerMock());
             await usersService.RegisterAsync(username, password);
             var user = await usersService.GetVerifiedUserAsync(username, "11111");
             Assert.IsNull(user);
@@ -40,7 +40,7 @@ namespace TwitterPoc.UnitTests
         {
             var username = "adi1111";
             var password = "123456";
-            var usersService = new UsersService(new UsersRepositoryMock(), new FollowersRepositoryMock(), new LoggerMock());
+            var usersService = new UsersService(new UsersRepositoryMock(), new FollowersRepositoryMock(), new MessagesRepositoryMock(), new LoggerMock());
             await usersService.RegisterAsync(username, password);
             var user = await usersService.GetVerifiedUserAsync("wrongUser", password);
             Assert.IsNull(user);
@@ -55,7 +55,7 @@ namespace TwitterPoc.UnitTests
             const string user4 = "user4";
             var followersRepositoryMock =  new FollowersRepositoryMock();
             var usersRepositoryMock = new UsersRepositoryMock();
-            var usersService = new UsersService(usersRepositoryMock, followersRepositoryMock, new LoggerMock());
+            var usersService = new UsersService(usersRepositoryMock, followersRepositoryMock, new MessagesRepositoryMock(), new LoggerMock());
             await Task.WhenAll(
                 usersService.RegisterAsync(user1, "1111"),
                 usersService.RegisterAsync(user2, "1111"),
@@ -91,7 +91,7 @@ namespace TwitterPoc.UnitTests
             const string user4 = "user4";
             var followersRepositoryMock = new FollowersRepositoryMock();
             var usersRepositoryMock = new UsersRepositoryMock();
-            var usersService = new UsersService(usersRepositoryMock, followersRepositoryMock, new LoggerMock());
+            var usersService = new UsersService(usersRepositoryMock, followersRepositoryMock, new MessagesRepositoryMock(), new LoggerMock());
             await Task.WhenAll(
                 usersService.RegisterAsync(user1, "1111"),
                 usersService.RegisterAsync(user2, "1111"),

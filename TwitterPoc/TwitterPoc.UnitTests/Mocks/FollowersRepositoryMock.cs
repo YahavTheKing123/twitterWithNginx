@@ -11,13 +11,19 @@ namespace TwitterPoc.UnitTests.Mocks
     {
         private readonly Dictionary<string, HashSet<string>> _userFollowees = new Dictionary<string, HashSet<string>>();
 
+        public async Task Add(string follower, bool ignoreKeyDuplication)
+        {
+            await Task.FromResult(0);
+            if (ignoreKeyDuplication && _userFollowees.ContainsKey(follower))
+            {
+                return;
+            }
+            _userFollowees.Add(follower, new HashSet<string>());
+        }
+
         public async Task Add(string follower, string followee)
         {
             await Task.FromResult(0);
-            if (!_userFollowees.ContainsKey(follower))
-            {
-                _userFollowees.Add(follower, new HashSet<string>());
-            }
 
             _userFollowees[follower].Add(followee);
         }
@@ -25,10 +31,6 @@ namespace TwitterPoc.UnitTests.Mocks
         public async Task Remove(string follower, string followee)
         {
             await Task.FromResult(0);
-            if (!_userFollowees.ContainsKey(follower))
-            {
-                _userFollowees.Add(follower, new HashSet<string>());
-            }
 
             _userFollowees[follower].Remove(followee);
         }
@@ -42,5 +44,6 @@ namespace TwitterPoc.UnitTests.Mocks
             }
             return Enumerable.Empty<string>();
         }
+
     }
 }
