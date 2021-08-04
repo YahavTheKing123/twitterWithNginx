@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from '../_services/auth.service';
 import { TokenStorageService } from '../_services/token-storage.service';
 import { UserService } from '../_services/user.service';
+import { UtilitiesService } from '../_services/utilities.service';
 
 @Component({
   selector: 'app-home',
@@ -12,7 +12,7 @@ import { UserService } from '../_services/user.service';
 export class HomeComponent implements OnInit {
   content?: string;
 
-  constructor(private userService: UserService, private router:Router, private tokenStorage: TokenStorageService) { }
+  constructor(private userService: UserService, private router:Router, private tokenStorage: TokenStorageService, private utilitiesService: UtilitiesService) { }
 
   ngOnInit(): void {
 
@@ -20,17 +20,16 @@ export class HomeComponent implements OnInit {
     if (!user)
     {
        this.router.navigate(['/register']);
+       return;
     }
-    //
-    /*
-    this.userService.getPublicContent().subscribe(
+
+    this.userService.getFeed().subscribe(
       data => {
-        this.content = data;
+        this.content = JSON.stringify(data);
       },
       err => {
-        this.content = JSON.parse(err.error).message;
+        this.content = this.utilitiesService.getErrorMessage(err);
       }
     );
-    */
   }
 }
