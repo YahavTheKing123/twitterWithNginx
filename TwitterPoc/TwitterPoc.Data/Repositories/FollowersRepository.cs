@@ -90,6 +90,11 @@ namespace TwitterPoc.Data.Repositories
             {
                 var result = await _followers.FindAsync(f => f.Username == followerUsername);
                 var userFollowees = await result.FirstOrDefaultAsync();
+                if (userFollowees == null || userFollowees.Followees == null)
+                {
+                    _logger.LogError($"Could not get followees of user {followerUsername}");
+                    return Enumerable.Empty<string>();
+                }
                 return userFollowees.Followees;
             }
             catch (Exception e)

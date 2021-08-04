@@ -68,7 +68,19 @@ namespace TwitterPoc.Logic.Services
 
         public async Task AddFollower(string follower, string followee)
         {
-            await _followersRepository.Add(follower, followee);
+            var followerExistsTask =_usersRepository.UserExists(follower);
+            var followeeExistsTask =_usersRepository.UserExists(followee);
+            await Task.WhenAll(followerExistsTask, followeeExistsTask);
+            var followerExists = followerExistsTask.Result;
+            var followeeExists = followeeExistsTask.Result;
+            if (followerExists && followeeExists)
+            {
+                await _followersRepository.Add(follower, followee);
+            }
+            else
+            {
+                _logger.LogInformation($"Follower was not added. followerExists={followerExists}, followeeExists={followeeExists}");
+            }
         }
 
         public async Task RemoveFollower(string follower, string followee)
