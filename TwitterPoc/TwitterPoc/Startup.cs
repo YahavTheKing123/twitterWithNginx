@@ -84,6 +84,18 @@ namespace TwitterPoc
                 .AddCookie(cfg => cfg.SlidingExpiration = true)
                 ;
 
+            services.AddCors(options =>
+              {
+                  options.AddDefaultPolicy(
+                  builder =>
+                  {
+                      builder.WithOrigins("http://localhost:4200", "https://localhost:4200")
+                      .AllowAnyHeader()
+                      .AllowAnyMethod()
+                      .AllowCredentials();
+                  });
+              });
+
             services.Configure<TwitterPocDatabaseSettings>(
                 Configuration.GetSection(nameof(TwitterPocDatabaseSettings)));
 
@@ -116,6 +128,8 @@ namespace TwitterPoc
             app.UseAuthorization();
 
             app.ConfigureExceptionHandler(logger);
+
+            app.UseCors();
 
             app.UseEndpoints(endpoints =>
             {
