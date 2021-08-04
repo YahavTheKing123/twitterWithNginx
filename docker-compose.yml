@@ -1,7 +1,7 @@
-version: '3.8'
+version: "3.8"
 
 services:
-   mongo:
+  mongo:
     container_name: mongodb
     image: mongo:latest
     restart: always
@@ -15,3 +15,19 @@ services:
 
     volumes:
       - ./docker-entrypoint-initdb.d/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+
+  client:
+    build: ./TwitterPocClient
+    container_name: client
+    ports:
+      - 8080:80
+
+  server:
+    build:
+      context: ./TwitterPoc
+      dockerfile: ./TwitterPoc/Dockerfile
+    container_name: server
+    environment:
+      - ASPNETCORE_URLS=http://+:80      
+    ports:
+      - 5000:80
