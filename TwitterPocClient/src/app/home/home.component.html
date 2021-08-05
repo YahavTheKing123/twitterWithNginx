@@ -1,10 +1,20 @@
-<div class="container">
-
-  <form class="example-form">
-    <mat-form-field class="example-full-width" appearance="fill">
-      <mat-label>Favorite food</mat-label>
-      <input matInput placeholder="Ex. Pizza" value="Sushi">
-    </mat-form-field>
-   </form>
-
+<div class="container component-padding">
+  <div>
+    <h1>Post a Tweet</h1>
+  </div>
+  <div>
+    <div class="form-group">
+      <textarea placeholder="Type your tweet here..." [(ngModel)]="content" class="form-control" rows="3"></textarea>
+    </div>
+    <div class="text-right">
+      <button type="button" (click)="postMessage()" class="btn btn-primary">Post</button>
+    </div>
+    <div *ngIf="alertText" class="alert" [ngClass]="{'alert-primary': postMessageSuccess, 'alert-danger': !postMessageSuccess}" role="alert">
+      {{alertText}}
+    </div>
+  </div>
+  <div class="component-padding">
+    <h2 *ngIf="messages">Your latest messages</h2>
+    <app-feed [messages]="messages"></app-feed>
+  </div>
 </div>

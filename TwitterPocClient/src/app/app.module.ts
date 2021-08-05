@@ -11,8 +11,7 @@ import { HomeComponent } from './home/home.component';
 
 import { authInterceptorProviders } from './_helpers/auth.interceptor';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
+import { FeedComponent } from './feed/feed.component';
 
 @NgModule({
   declarations: [
@@ -20,15 +19,14 @@ import { MatInputModule } from '@angular/material/input';
     LoginComponent,
     RegisterComponent,
     HomeComponent,
+    FeedComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
     HttpClientModule,
-    BrowserAnimationsModule,
-    MatFormFieldModule,
-    MatInputModule
+    BrowserAnimationsModule
   ],
   providers: [authInterceptorProviders],
   bootstrap: [AppComponent]
