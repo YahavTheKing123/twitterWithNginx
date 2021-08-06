@@ -30,13 +30,7 @@ namespace TwitterPoc.Controllers
         [HttpPost]
         public async Task<IActionResult> PostMessage([FromBody]PostedMessageModel model)
         {
-            /*
-            if (!ModelState.IsValid)
-            {
-                _logger.LogInformation("PostMessage - invalid message: " + model?.MessageBody);
-                return BadRequest(ModelState);
-            }
-            */
+            _logger.LogInformation($"PostMessage - model.MessageBody: {model.MessageBody}");
             await _feedsService.AddMessage(User.Identity.Name, model.MessageBody);
             return Ok();
         }
@@ -45,6 +39,8 @@ namespace TwitterPoc.Controllers
         [HttpGet]
         public async Task<IActionResult> GetFeed(string username)
         {
+            _logger.LogInformation($"GetFeed - username: {username}");
+
             return await GetFeedModel(username, true);
         }
 

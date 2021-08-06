@@ -32,18 +32,28 @@ namespace TwitterPoc.Logic.Services
 
         public async Task<Feed> GetGlobalFeed(string followeePartialUsername)
         {
-            var messageSets = await _messagesRepository.Get(followeePartialUsername, false);
             Feed feed = new Feed();
+
+            if (string.IsNullOrEmpty(followeePartialUsername))
+            {
+                return feed;
+            }
+            var messageSets = await _messagesRepository.Get(followeePartialUsername, false);
             feed.Add(messageSets);
             return feed;
         }
 
         public async Task<Feed> GetUserFeed(string currentUsername, string followeePartialUsername)
         {
+            Feed feed = new Feed();
+
+            if (string.IsNullOrEmpty(followeePartialUsername))
+            {
+                return feed;
+            }
             var followees = await _followersRepository.Get(currentUsername);
             var relevantFollowees = followees.Where(f => f.Contains(followeePartialUsername)).ToArray();
             var messageSets = await _messagesRepository.Get(relevantFollowees, true);
-            var feed = new Feed();
             feed.Add(messageSets);
             return feed;
         }

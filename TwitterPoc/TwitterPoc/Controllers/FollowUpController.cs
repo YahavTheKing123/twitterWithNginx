@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,10 +18,12 @@ namespace TwitterPoc.Controllers
     public class FollowUpController : ControllerBase
     {
         private readonly IUsersService _usersService;
+        private readonly ILogger _logger;
 
-        public FollowUpController(IUsersService usersService)
+        public FollowUpController(IUsersService usersService, ILogger<FollowUpController> logger)
         {
             _usersService = usersService;
+            _logger = logger;
         }
 
         [Route("Follow")]
@@ -28,6 +31,7 @@ namespace TwitterPoc.Controllers
         public IActionResult Follow(string username)
         {
             var follower = User.Identity.Name;
+            _logger.LogInformation($"Follow - {follower}->{User}");
             _usersService.AddFollower(follower, username);
             return Ok();
         }
@@ -37,6 +41,7 @@ namespace TwitterPoc.Controllers
         public IActionResult Unfollow(string username)
         {
             var follower = User.Identity.Name;
+            _logger.LogInformation($"Unfollow - {follower}->{User}");
             _usersService.RemoveFollower(follower, username);
             return Ok();
         }
