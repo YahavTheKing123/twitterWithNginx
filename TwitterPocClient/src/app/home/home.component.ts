@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FeedMessage } from '../_entities/feed-message';
 import { TokenStorageService } from '../_services/token-storage.service';
-import { UserService } from '../_services/user.service';
+import { ApiService } from '../_services/api.service';
 import { UtilitiesService } from '../_services/utilities.service';
 
 
@@ -13,11 +13,11 @@ import { UtilitiesService } from '../_services/utilities.service';
 })
 export class HomeComponent implements OnInit {
   content:string = '';
-  messages:FeedMessage[] = [{content: 'my message', username: 'some user'}];
-  alertText:string ='';
+  latestMessages:FeedMessage[] = [];
+  notificationText:string ='';
   postMessageSuccess:boolean=false;
 
-  constructor(private userService: UserService, private router:Router, private tokenStorage: TokenStorageService, private utilitiesService: UtilitiesService) { }
+  constructor(private apiService: ApiService, private router:Router, private tokenStorage: TokenStorageService, private utilitiesService: UtilitiesService) { }
 
   ngOnInit(): void {
 
@@ -27,29 +27,31 @@ export class HomeComponent implements OnInit {
        this.router.navigate(['/register']);
        return;
     }
-    this.content = 'sddsds';
-
-    /*
-    this.userService.getFeed().subscribe(
-      data => {
-        this.content = JSON.stringify(data);
-      },
-      err => {
-        this.content = this.utilitiesService.getErrorMessage(err);
-      }
-    );
-    */
   }
 
-  showNotification(message:string, success:boolean):void{
-    this.alertText = message;
+  private showNotification(message:string, success:boolean):void{
+    this.notificationText = message;
     this.postMessageSuccess = success;
-    setTimeout(()=>{this.alertText = ''}, 3000);
+    setTimeout(()=>{this.notificationText = ''}, 3000);
   }
 
   postMessage():void {
-    console.log(this.content);
+    /*
+
     this.messages.push({content: 'my message 2', username: 'some user'});
     this.showNotification('aaaa', true);
+    */
+   console.log('Message is going to posted: ' + this.content);
+   this.apiService.postMessage(this.content).subscribe(
+    data => {
+      console.log(data);
+      this.showNotification('Posted successfully!', false);
+
+    },
+    err => {
+      const errorText = this.utilitiesService.getErrorMessage(err);
+      this.showNotification(errorText, false);
+    });
   }
+  
 }

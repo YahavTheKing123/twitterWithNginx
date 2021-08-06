@@ -28,9 +28,13 @@ export class UtilitiesService {
     {
        return err.error.message;
     }
-    else
+    else if (err.error.Message)
     {
       return err.error.Message;
+    }
+    else
+    {
+      return 'Unknown error.';
     }
 
   }

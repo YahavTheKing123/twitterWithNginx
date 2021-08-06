@@ -7,7 +7,7 @@ const API_URL = 'http://localhost:5000/api/Feed/';
 @Injectable({
   providedIn: 'root'
 })
-export class UserService {
+export class ApiService {
 
   constructor(private http: HttpClient) { }
 
@@ -17,4 +17,7 @@ export class UserService {
     return this.http.get(API_URL + 'GetFeed');
   }
 
+  postMessage(content: string): Observable<any> {
+    return this.http.post(API_URL + 'PostMessage', {MessageBody:content});
+  }
 }

@@ -13,7 +13,7 @@ export class FeedComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    //this.messages.push({content:'aa', username: 'sdgdgs'})
+
   }
 
 }

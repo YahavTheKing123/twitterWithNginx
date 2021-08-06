@@ -9,12 +9,13 @@
     <div class="text-right">
       <button type="button" (click)="postMessage()" class="btn btn-primary">Post</button>
     </div>
-    <div *ngIf="alertText" class="alert" [ngClass]="{'alert-primary': postMessageSuccess, 'alert-danger': !postMessageSuccess}" role="alert">
-      {{alertText}}
+    <div *ngIf="notificationText" class="alert" [ngClass]="{'alert-primary': postMessageSuccess, 'alert-danger': !postMessageSuccess}" role="alert">
+      {{notificationText}}
     </div>
   </div>
   <div class="component-padding">
-    <h2 *ngIf="messages">Your latest messages</h2>
-    <app-feed [messages]="messages"></app-feed>
+    <h2 *ngIf="latestMessages">Your latest tweets</h2>
+    <span>(These are only the messages you've just posted right now. Select "My Feed" or "Global Feed" to see other users posts.</span>
+    <app-feed [messages]="latestMessages"></app-feed>
   </div>
 </div>
