@@ -20,6 +20,7 @@ using TwitterPoc.Authorization;
 using TwitterPoc.Data.Interfaces;
 using TwitterPoc.Data.Repositories;
 using TwitterPoc.Data.Settings;
+using TwitterPoc.Initialization;
 using TwitterPoc.Logic;
 using TwitterPoc.Logic.Interfaces;
 using TwitterPoc.Logic.Services;
@@ -115,12 +116,13 @@ namespace TwitterPoc
                     .AddScoped<IMessagesRepository, MessagesRepository>()
                     .AddScoped<IUsersService, UsersService>()
                     .AddScoped<IFeedsService, FeedsService>()
+                    .AddTransient<IDataInitializationService,DataInitializationService>()
 
                     ;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger, IDataInitializationService dataInitializationService)
         {
             if (env.IsDevelopment())
             {
@@ -142,8 +144,7 @@ namespace TwitterPoc
                 endpoints.MapControllers();
             });
 
-
-
+            dataInitializationService.AddSampleDataIfEmptyProject();
         }
     }
 }

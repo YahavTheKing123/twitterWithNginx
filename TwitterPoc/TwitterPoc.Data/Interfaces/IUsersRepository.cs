@@ -13,5 +13,7 @@ namespace TwitterPoc.Data.Interfaces
         Task<User> GetAsync(string username);
 
         Task<bool> UserExists(string username);
+
+        Task<bool> ContainsAnyUser();
     }
 }

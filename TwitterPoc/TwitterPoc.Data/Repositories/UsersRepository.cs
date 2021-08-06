@@ -62,5 +62,11 @@ namespace TwitterPoc.Data.Repositories
             var result = await _users.FindAsync(u => u.Username == username);
             return await result.AnyAsync();
         }
+
+        public async Task<bool> ContainsAnyUser()
+        {
+            var result = await _users.FindAsync(u => true);
+            return await result.AnyAsync();
+        }
     }
 }
