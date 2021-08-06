@@ -1,5 +1,5 @@
-<p>feed works!</p>
-
 <div *ngFor="let m of messages">
+    {{m.username}}
     {{m.content}}
+    {{m.time | date:'short'}}
 </div>

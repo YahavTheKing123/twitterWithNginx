@@ -4,10 +4,10 @@
   </div>
   <div>
     <div class="form-group">
-      <textarea placeholder="Type your tweet here..." [(ngModel)]="content" class="form-control" rows="3"></textarea>
+      <textarea placeholder="Type your tweet here..." [(ngModel)]="content" class="form-control" rows="3" maxlength="140"></textarea>
     </div>
     <div class="text-right">
-      <button type="button" (click)="postMessage()" class="btn btn-primary">Post</button>
+      <button type="button" [disabled]="disableButton || !content" (click)="postMessage()" class="btn btn-primary">Post</button>
     </div>
     <div *ngIf="notificationText" class="alert" [ngClass]="{'alert-primary': postMessageSuccess, 'alert-danger': !postMessageSuccess}" role="alert">
       {{notificationText}}
@@ -15,7 +15,7 @@
   </div>
   <div class="component-padding">
     <h2 *ngIf="latestMessages">Your latest tweets</h2>
-    <span>(These are only the messages you've just posted right now. Select "My Feed" or "Global Feed" to see other users posts.</span>
+    <span class="blockquote-footer">These are only the messages you've just posted right now. Select "My Feed" or "Global Feed" to see other users posts.</span>
     <app-feed [messages]="latestMessages"></app-feed>
   </div>
 </div>

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { AuthService } from '../_services/auth.service';
 import { UtilitiesService } from '../_services/utilities.service';
 
@@ -17,7 +18,7 @@ export class RegisterComponent implements OnInit {
   isSignUpFailed = false;
   errorMessage = '';
 
-  constructor(private authService: AuthService, private utilitiesService: UtilitiesService) { }
+  constructor(private authService: AuthService, private utilitiesService: UtilitiesService, private router:Router) { }
 
   ngOnInit(): void {
   }
@@ -30,6 +31,9 @@ export class RegisterComponent implements OnInit {
         console.log(data);
         this.isSuccessful = true;
         this.isSignUpFailed = false;
+        setTimeout(() => {
+          this.router.navigate(['/login']);
+        }, 2000);
       },
       err => {
         this.errorMessage = this.utilitiesService.getErrorMessage(err);
