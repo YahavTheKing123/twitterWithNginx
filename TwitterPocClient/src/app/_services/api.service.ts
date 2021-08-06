@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { FeedModel } from '../_entities/feed-model';
 
 const API_URL = 'http://localhost:5000/api/Feed/';
 
@@ -11,10 +12,12 @@ export class ApiService {
 
   constructor(private http: HttpClient) { }
 
+  getFeed(username:string): Observable<any> {
+    return this.http.get<FeedModel>(API_URL + 'GetFeed/' + username);
+  }
 
-
-  getFeed(): Observable<any> {
-    return this.http.get(API_URL + 'GetFeed');
+  getMyFeed(username:string): Observable<FeedModel> {
+    return this.http.get<FeedModel>(API_URL + 'GetMyFeed/' + username);
   }
 
   postMessage(content: string): Observable<any> {

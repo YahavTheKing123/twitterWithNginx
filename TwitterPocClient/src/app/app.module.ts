@@ -12,6 +12,8 @@ import { HomeComponent } from './home/home.component';
 import { authInterceptorProviders } from './_helpers/auth.interceptor';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FeedComponent } from './feed/feed.component';
+import { MyFeedComponent } from './my-feed/my-feed.component';
+import { GlobalFeedComponent } from './global-feed/global-feed.component';
 
 @NgModule({
   declarations: [
@@ -20,6 +22,8 @@ import { FeedComponent } from './feed/feed.component';
     RegisterComponent,
     HomeComponent,
     FeedComponent,
+    MyFeedComponent,
+    GlobalFeedComponent,
   ],
   imports: [
     BrowserModule,

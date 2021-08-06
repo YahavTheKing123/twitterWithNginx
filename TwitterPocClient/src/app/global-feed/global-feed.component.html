@@ -1,0 +1,21 @@
+<div class="container component-padding">
+    <div>
+      <h1>Global Feed</h1>
+    </div>
+    <div>
+      <div class="form-group">
+        <input type="text" (keypress)="getFeed()" [(ngModel)]="username" class="form-control" placeholder="Type username or a partial username to see their tweets...">
+      </div>
+      <div *ngIf="errorText" class="alert alert-danger" role="alert">
+        {{errorText}}
+      </div>
+    </div>
+    <div class="component-padding" *ngIf="suggestedUsers">
+      <h4>Suggested users to follow</h4>
+      <button *ngFor="let u of suggestedUsers">{{u}}</button>
+    </div>
+    <div class="component-padding">
+      <div *ngIf="!messages">Feed is empty.</div>
+      <app-feed [messages]="messages"></app-feed>
+    </div>
+  </div>
