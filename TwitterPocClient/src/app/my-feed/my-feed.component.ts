@@ -26,6 +26,7 @@ export class MyFeedComponent implements OnInit {
        this.router.navigate(['/register']);
        return;
     }
+
   }
 
   private showError(message:string):void{
@@ -36,7 +37,6 @@ export class MyFeedComponent implements OnInit {
   getFeed(): void {
     this.apiService.getMyFeed(this.username).subscribe(
       data => {
-        console.log(data);
         this.messages = data.messages;
       },
       err => {

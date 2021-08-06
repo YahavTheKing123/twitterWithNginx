@@ -3,6 +3,7 @@ using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using TwitterPoc.Data.Entities;
@@ -41,20 +42,30 @@ namespace TwitterPoc.Data.Repositories
         }
 
 
-        public async Task<IEnumerable<Message>> Get(string username, bool exactMatch)
+        public async Task<IEnumerable<Message>> Get(string username, bool exactMatch, int limit)
         {
             try
             {
                 IAsyncCursor<Message> result;
-                var options = GetDescendingSortOptions<Message>("Time");
-                if (exactMatch)
+                var options = new FindOptions<Message>
                 {
-                    result = await _messages.FindAsync(m => m.Username == username, options);
+                    Sort = Builders<Message>.Sort.Descending("Time"),
+                    Limit = limit
+                };
+                Expression<Func<Message, bool>> predicate;
+                if (string.IsNullOrEmpty(username))
+                {
+                    predicate = m => true;
+                }
+                else if (exactMatch)
+                {
+                    predicate = m => m.Username == username;
                 }
                 else
                 {
-                    result = await _messages.FindAsync(m => m.Username.Contains(username), options);
+                    predicate = m => m.Username.Contains(username);
                 }
+                result = await _messages.FindAsync(predicate, options);
 
                 return await result.ToListAsync();
             }
@@ -66,13 +77,17 @@ namespace TwitterPoc.Data.Repositories
 
         }
 
-        public async Task<IEnumerable<Message>> Get(IEnumerable<string> usernames, bool exactMatch)
+        public async Task<IEnumerable<Message>> Get(IEnumerable<string> usernames, bool exactMatch, int limit)
         {
             try
             {
                 var usernamesHashSet = usernames.ToHashSet();
                 IAsyncCursor<Message> result;
-                var options = GetDescendingSortOptions<Message>("Time");
+                var options = new FindOptions<Message>
+                {
+                    Sort = Builders<Message>.Sort.Descending("Time"),
+                    Limit = limit
+                };
 
                 if (exactMatch)
                 {
@@ -94,13 +109,6 @@ namespace TwitterPoc.Data.Repositories
 
         }
 
-        private FindOptions<T> GetDescendingSortOptions<T>(string field)
-        {
-            return new FindOptions<T>
-            {
-                Sort = Builders<T>.Sort.Descending(field)
-            };
-        }
 
     }
 }

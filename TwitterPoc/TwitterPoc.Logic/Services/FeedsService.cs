@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,11 +16,25 @@ namespace TwitterPoc.Logic.Services
     {
         private readonly IMessagesRepository _messagesRepository;
         private readonly IFollowersRepository _followersRepository;
+        private readonly ILogger _logger;
+        private readonly int _maxMessagesPerFeed;
 
-        public FeedsService(IMessagesRepository messagesRepository, IFollowersRepository followersRepository)
+        public FeedsService(IMessagesRepository messagesRepository, IFollowersRepository followersRepository, IConfiguration config, ILogger<FeedsService> logger)
         {
             _messagesRepository = messagesRepository;
             _followersRepository = followersRepository;
+            _logger = logger;
+
+            if (int.TryParse(config["MaxMessagesPerFeed"], out int maxMessagesPerFeed))
+            {
+                _maxMessagesPerFeed = maxMessagesPerFeed;
+                _logger.LogError($"'MaxMessagesPerFeed' parameter has been parsed successfully and its value is: {_maxMessagesPerFeed}");
+            }
+            else
+            {
+                _maxMessagesPerFeed = 50;
+                _logger.LogError($"Could find 'MaxMessagesPerFeed' in configuration. Using {_maxMessagesPerFeed} as default.");
+            }
         }
 
         public async Task AddMessage(string username, string message)
@@ -33,13 +49,8 @@ namespace TwitterPoc.Logic.Services
 
         public async Task<Feed> GetGlobalFeed(string followeePartialUsername)
         {
-            Feed feed = new Feed();
-
-            if (string.IsNullOrEmpty(followeePartialUsername))
-            {
-                return feed;
-            }
-            var messages = await _messagesRepository.Get(followeePartialUsername, false);
+            var feed = new Feed();
+            var messages = await _messagesRepository.Get(followeePartialUsername, false, _maxMessagesPerFeed);
             feed.Add(messages);
             return feed;
         }
@@ -50,11 +61,13 @@ namespace TwitterPoc.Logic.Services
 
             if (string.IsNullOrEmpty(followeePartialUsername))
             {
+                _logger.LogInformation($"A request to get user feed with an empty followee name. currentUsername={currentUsername}");
+
                 return feed;
             }
             var followees = await _followersRepository.Get(currentUsername);
             var relevantFollowees = followees.Where(f => f.Contains(followeePartialUsername)).ToArray();
-            var messageSets = await _messagesRepository.Get(relevantFollowees, true);
+            var messageSets = await _messagesRepository.Get(relevantFollowees, true, _maxMessagesPerFeed);
             feed.Add(messageSets);
             return feed;
         }

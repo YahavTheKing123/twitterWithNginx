@@ -28,6 +28,10 @@ export class GlobalFeedComponent implements OnInit {
        this.router.navigate(['/register']);
        return;
     }
+    else
+    {
+      this.getFeed();
+    }
   }
   private showError(message:string):void{
     this.errorText = message;
@@ -35,10 +39,8 @@ export class GlobalFeedComponent implements OnInit {
   }
 
   getFeed(): void {
-    console.log('username='+this.username);
     this.apiService.getFeed(this.username).subscribe(
       data => {
-        console.log(data);
         this.messages = data.messages;
         this.suggestedUsers = this.messages.map(m=>m.username).filter((value, index, self)=>self.indexOf(value) === index);
       },
