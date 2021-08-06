@@ -28,14 +28,6 @@ export class GlobalFeedComponent implements OnInit {
        this.router.navigate(['/register']);
        return;
     }
-    if (this.messages)
-    {
-      console.log(this.messages.length);
-    }
-    if (!this.messages)
-    {
-      console.log('false');
-    }
   }
   private showError(message:string):void{
     this.errorText = message;

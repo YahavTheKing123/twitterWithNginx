@@ -35,7 +35,7 @@ namespace TwitterPoc.Controllers
             return Ok();
         }
 
-        [Route("GetFeed/{username}")]
+        [Route("GetFeed/{username?}")]
         [HttpGet]
         public async Task<IActionResult> GetFeed(string username)
         {
@@ -44,7 +44,7 @@ namespace TwitterPoc.Controllers
             return await GetFeedModel(username, true);
         }
 
-        [Route("GetMyFeed/{username}")]
+        [Route("GetMyFeed/{username?}")]
         [HttpGet]
         public async Task<IActionResult> GetMyFeed(string username)
         {
