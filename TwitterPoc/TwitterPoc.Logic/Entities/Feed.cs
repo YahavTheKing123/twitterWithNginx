@@ -16,14 +16,10 @@ namespace TwitterPoc.Logic.Entities
             Messages = new List<Message>();
         }
 
-        public void Add(IEnumerable<MessagesSet> messageSets)
+        public void Add(IEnumerable<Data.Entities.Message> messages)
         {
-            foreach (var set in messageSets)
-            {
-                var username = set.Username;
-                var messagesToAdd = set.Messages.Select(m => new Message(username, m.Content, m.Time));
-                this.Messages.AddRange(messagesToAdd);
-            }
+            var messagesToAdd = messages.Select(m => new Message(m.Username, m.Content, m.Time));
+            this.Messages.AddRange(messagesToAdd);
         }
     }
 }

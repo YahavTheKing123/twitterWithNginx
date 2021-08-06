@@ -13,7 +13,7 @@ namespace TwitterPoc.Data.Repositories
 {
     public class MessagesRepository : IMessagesRepository
     {
-        private readonly IMongoCollection<MessagesSet> _messages;
+        private readonly IMongoCollection<Message> _messages;
         private readonly ILogger<MessagesRepository> _logger;
 
         public MessagesRepository(ITwitterPocDatabaseSettings settings, ILogger<MessagesRepository> logger)
@@ -22,57 +22,31 @@ namespace TwitterPoc.Data.Repositories
             var client = new MongoClient(settings.ConnectionString);
             var database = client.GetDatabase(settings.DatabaseName);
 
-            _messages = database.GetCollection<MessagesSet>("messages");
+            _messages = database.GetCollection<Message>("messages");
         }
 
-        public async Task Add(string username, Message message)
+
+        public async Task Add(Message message)
         {
             try
             {
-                var filter = Builders<MessagesSet>.Filter.Eq(e => e.Username, username);
-
-                var update = Builders<MessagesSet>.Update.Push(e => e.Messages, message);
-
-                await _messages.FindOneAndUpdateAsync(filter, update);
+                await _messages.InsertOneAsync(message);
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error on adding a message. Username: {username}. Time of message: {message?.Time}. Content: {message?.Content}");
+                _logger.LogError(e, $"Error on adding a message. Username: {message.Username}. Time of message: {message?.Time}. Content: {message?.Content}");
                 throw;
             }
 
         }
 
-        public async Task Add(string username, bool ignoreKeyDuplication)
+
+        public async Task<IEnumerable<Message>> Get(string username, bool exactMatch)
         {
             try
             {
-                await _messages.InsertOneAsync(new MessagesSet() { Username = username, Messages = new List<Message>() });
-            }
-            catch (Exception e)
-            {
-                if (ignoreKeyDuplication && e is MongoDuplicateKeyException)
-                {
-                    //Ignored using an exception Because a duplicate key is not a common scenario here,
-                    //then it is better to insert and get a failure,
-                    //than to check it on every user insertion 
-                    _logger.LogInformation($"A duplicate key exception has been thrown for user {username}, and is ignored.");
-                }
-                else
-                {
-                    _logger.LogError(e, $"Error on adding a user. Username: {username}.");
-                    throw;
-                }
-            }
-
-        }
-
-        public async Task<IEnumerable<MessagesSet>> Get(string username, bool exactMatch)
-        {
-            try
-            {
-                IAsyncCursor<MessagesSet> result;
-                var options = GetDescendingSortOptions<MessagesSet>("time");
+                IAsyncCursor<Message> result;
+                var options = GetDescendingSortOptions<Message>("Time");
                 if (exactMatch)
                 {
                     result = await _messages.FindAsync(m => m.Username == username, options);
@@ -92,13 +66,13 @@ namespace TwitterPoc.Data.Repositories
 
         }
 
-        public async Task<IEnumerable<MessagesSet>> Get(IEnumerable<string> usernames, bool exactMatch)
+        public async Task<IEnumerable<Message>> Get(IEnumerable<string> usernames, bool exactMatch)
         {
             try
             {
                 var usernamesHashSet = usernames.ToHashSet();
-                IAsyncCursor<MessagesSet> result;
-                var options = GetDescendingSortOptions<MessagesSet>("time");
+                IAsyncCursor<Message> result;
+                var options = GetDescendingSortOptions<Message>("Time");
 
                 if (exactMatch)
                 {

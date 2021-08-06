@@ -10,51 +10,33 @@ namespace TwitterPoc.UnitTests.Mocks
 {
     public class MessagesRepositoryMock : IMessagesRepository
     {
-        private readonly Dictionary<string, MessagesSet> _messages = new Dictionary<string, MessagesSet>();
+        private readonly List<Message> _messages = new List<Message>();
 
-        public async Task Add(string username, Message message)
+        public async Task Add(Message message)
         {
             await Task.FromResult(0);
 
-            if (_messages.ContainsKey(username))
-            {
-                _messages[username].Messages.Add(message);
-            }
+            _messages.Add(message);
         }
 
-        public async Task Add(string username, bool ignoreKeyDuplication)
-        {
-            await Task.FromResult(0);
-            if (ignoreKeyDuplication && _messages.ContainsKey(username))
-            {
-                return;
-            }
-            _messages.Add(username, new MessagesSet() { Username = username, Messages = new List<Message>() });
-        }
-
-        public async Task<IEnumerable<MessagesSet>> Get(string username, bool exactMatch)
+        public async Task<IEnumerable<Message>> Get(string username, bool exactMatch)
         {
             await Task.FromResult(0);
 
             if (exactMatch)
             {
-                if (_messages.ContainsKey(username))
-                {
-                    return new[] { _messages[username] };
-                }
+                return _messages.Where(m => m.Username == username);
             }
             else
             {
-                return _messages.Where(kvp => kvp.Key.Contains(username)).Select(kvp => kvp.Value);
+                return _messages.Where(m => m.Username.Contains(username));
             }
-
-            return Enumerable.Empty<MessagesSet>();
         }
 
-        public async Task<IEnumerable<MessagesSet>> Get(IEnumerable<string> usernames, bool exactMatch)
+        public async Task<IEnumerable<Message>> Get(IEnumerable<string> usernames, bool exactMatch)
         {
             await Task.FromResult(0);
-            var messages = new List<MessagesSet>();
+            var messages = new List<Message>();
             foreach (var username in usernames)
             {
                 messages.AddRange(await Get(username, exactMatch));

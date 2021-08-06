@@ -38,8 +38,6 @@ namespace TwitterPoc.Initialization
                     _logger.LogInformation("AddSampleDataIfEmptyProject - database does not contain users. Adding sample data...");
                 }
 
-                //var usersAndMessages = new[] { "haim", "shimon", "david", "adi", "adi23", "adi42", "adi_88", "moris", "avner", "amit_aa", "amit99" };
-
                 var usersAndMessages = GetData();
                 await RegisterUsers(usersAndMessages.Keys.ToArray());
                 await AddMessages(usersAndMessages);

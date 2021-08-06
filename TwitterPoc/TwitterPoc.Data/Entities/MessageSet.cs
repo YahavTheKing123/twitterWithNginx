@@ -10,15 +10,11 @@ namespace TwitterPoc.Data.Entities
 {
     public class Message
     {
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public ObjectId Id { get; set; }
+        public string Username { get; set; }
         public string Content { get; set; }
         public DateTime Time { get; set; }
-    }
-
-    public class MessagesSet
-    {
-        [BsonId]
-        [BsonRepresentation(BsonType.String)]
-        public string Username { get; set; }
-        public List<Message> Messages { get; set; }
     }
 }

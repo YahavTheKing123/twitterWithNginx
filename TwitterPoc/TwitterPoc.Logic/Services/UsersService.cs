@@ -37,12 +37,7 @@ namespace TwitterPoc.Logic.Services
                 throw new UsernameAlreadyExistsException(username);
             }
             await _usersRepository.AddAsync(new User() { Username = username, Password = hash, PasswordSalt = salt });
-            await Task.WhenAll(
-                _messagesRepository.Add(username, true),
-                _followersRepository.Add(username, true)
-                );
-            
-
+            await _followersRepository.Add(username, true);
         }
 
         public async Task<Entities.User> GetVerifiedUserAsync(string username, string password)

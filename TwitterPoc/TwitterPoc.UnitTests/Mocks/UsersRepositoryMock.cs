@@ -30,5 +30,11 @@ namespace TwitterPoc.UnitTests.Mocks
             await Task.FromResult(0);
             return _users.Any(u => u.Username == username);
         }
+
+        public async Task<bool> ContainsAnyUser()
+        {
+            await Task.FromResult(0);
+            return _users.Any();
+        }
     }
 }

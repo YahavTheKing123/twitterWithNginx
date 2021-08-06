@@ -12,5 +12,6 @@ db.createUser(
 db.createCollection('users');
 db.createCollection('messages');
 db.createCollection('followers');
+db.messages.createIndex( { "username": 1 }, { unique: false } )
 
 print('END #################################################################');

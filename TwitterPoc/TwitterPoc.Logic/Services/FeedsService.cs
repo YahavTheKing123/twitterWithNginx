@@ -24,10 +24,11 @@ namespace TwitterPoc.Logic.Services
         public async Task AddMessage(string username, string message)
         {
             var messageToAdd = new Data.Entities.Message() {
+                Username = username,
                 Content = message,
                 Time = DateTime.UtcNow,
             };
-            await _messagesRepository.Add(username, messageToAdd);
+            await _messagesRepository.Add(messageToAdd);
         }
 
         public async Task<Feed> GetGlobalFeed(string followeePartialUsername)
@@ -38,8 +39,8 @@ namespace TwitterPoc.Logic.Services
             {
                 return feed;
             }
-            var messageSets = await _messagesRepository.Get(followeePartialUsername, false);
-            feed.Add(messageSets);
+            var messages = await _messagesRepository.Get(followeePartialUsername, false);
+            feed.Add(messages);
             return feed;
         }
 

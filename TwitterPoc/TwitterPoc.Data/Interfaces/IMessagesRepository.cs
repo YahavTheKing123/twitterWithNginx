@@ -9,9 +9,8 @@ namespace TwitterPoc.Data.Interfaces
 {
     public interface IMessagesRepository
     {
-        Task Add(string username, bool ignoreKeyDuplication);
-        Task Add(string username, Message message);
-        Task<IEnumerable<MessagesSet>> Get(string username, bool exactMatch);
-        Task<IEnumerable<MessagesSet>> Get(IEnumerable<string> usernames, bool exactMatch);
+        Task Add(Message message);
+        Task<IEnumerable<Message>> Get(string username, bool exactMatch);
+        Task<IEnumerable<Message>> Get(IEnumerable<string> usernames, bool exactMatch);
     }
 }
