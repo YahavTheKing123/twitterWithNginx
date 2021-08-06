@@ -32,6 +32,7 @@ namespace TwitterPoc.Initialization
                 if (containsAnyUser)
                 {
                     _logger.LogInformation("AddSampleDataIfEmptyProject - database already contains users. No need of sample data initialization.");
+                    return;
                 }
                 else
                 {

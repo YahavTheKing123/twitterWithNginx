@@ -13,12 +13,13 @@
         {{errorText}}
       </div>
     </div>
-    <div class="component-padding" *ngIf="suggestedUsers">
+    <div class="component-padding" *ngIf="suggestedUsers.length">
       <h4>Suggested users to follow</h4>
       <button *ngFor="let u of suggestedUsers">{{u}}</button>
     </div>
     <div class="component-padding">
-      <div *ngIf="!messages">Feed is empty.</div>
+      <hr class="margin-bottom-10">
+      <div *ngIf="!messages.length">Feed is empty.</div>
       <app-feed [messages]="messages"></app-feed>
     </div>
   </div>
