@@ -4,6 +4,7 @@ import { FeedMessage } from '../_entities/feed-message';
 import { ApiService } from '../_services/api.service';
 import { TokenStorageService } from '../_services/token-storage.service';
 import { UtilitiesService } from '../_services/utilities.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-global-feed',
@@ -34,7 +35,7 @@ export class GlobalFeedComponent implements OnInit {
   }
 
   getFeed(): void {
-
+    console.log('username='+this.username);
     this.apiService.getFeed(this.username).subscribe(
       data => {
         console.log(data);

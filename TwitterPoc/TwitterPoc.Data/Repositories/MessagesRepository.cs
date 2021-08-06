@@ -72,14 +72,16 @@ namespace TwitterPoc.Data.Repositories
             try
             {
                 IAsyncCursor<MessagesSet> result;
+                var options = GetDescendingSortOptions<MessagesSet>("time");
                 if (exactMatch)
                 {
-                    result = await _messages.FindAsync(m => m.Username == username);
+                    result = await _messages.FindAsync(m => m.Username == username, options);
                 }
                 else
                 {
-                    result = await _messages.FindAsync(m => m.Username.Contains(username));
+                    result = await _messages.FindAsync(m => m.Username.Contains(username), options);
                 }
+
                 return await result.ToListAsync();
             }
             catch (Exception e)
@@ -96,13 +98,15 @@ namespace TwitterPoc.Data.Repositories
             {
                 var usernamesHashSet = usernames.ToHashSet();
                 IAsyncCursor<MessagesSet> result;
+                var options = GetDescendingSortOptions<MessagesSet>("time");
+
                 if (exactMatch)
                 {
-                    result = await _messages.FindAsync(m => usernamesHashSet.Contains(m.Username));
+                    result = await _messages.FindAsync(m => usernamesHashSet.Contains(m.Username), options);
                 }
                 else
                 {
-                    result = await _messages.FindAsync(m => usernamesHashSet.Any(username => m.Username.Contains(username)));
+                    result = await _messages.FindAsync(m => usernamesHashSet.Any(username => m.Username.Contains(username)), options);
                 }
 
                 return await result.ToListAsync();
@@ -114,6 +118,14 @@ namespace TwitterPoc.Data.Repositories
                 throw;
             }
 
+        }
+
+        private FindOptions<T> GetDescendingSortOptions<T>(string field)
+        {
+            return new FindOptions<T>
+            {
+                Sort = Builders<T>.Sort.Descending(field)
+            };
         }
 
     }

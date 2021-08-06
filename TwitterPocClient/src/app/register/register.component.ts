@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../_services/auth.service';
+import { TokenStorageService } from '../_services/token-storage.service';
 import { UtilitiesService } from '../_services/utilities.service';
 
 @Component({
@@ -18,9 +19,12 @@ export class RegisterComponent implements OnInit {
   isSignUpFailed = false;
   errorMessage = '';
 
-  constructor(private authService: AuthService, private utilitiesService: UtilitiesService, private router:Router) { }
+  constructor(private authService: AuthService, private utilitiesService: UtilitiesService, private tokenStorage:TokenStorageService, private router:Router) { }
 
   ngOnInit(): void {
+    if (this.tokenStorage.getToken()) {
+      this.router.navigate(['/home']);
+    }
   }
 
   onSubmit(): void {

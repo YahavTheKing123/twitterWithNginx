@@ -27,9 +27,17 @@ export class AppComponent implements OnInit {
   }
 
   async logout(): Promise<void> {
-    await this.authService.logout().toPromise();
-    this.tokenStorageService.signOut();
-    window.location.reload();
+    try
+    {
+      await this.authService.logout().toPromise();
+    }
+    finally
+    {
+      this.tokenStorageService.signOut();
+      window.location.reload();
+    }
+
+
   };
 
 

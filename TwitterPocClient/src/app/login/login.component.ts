@@ -22,7 +22,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.tokenStorage.getToken()) {
-      this.isLoggedIn = true;
+      this.router.navigate(['/home']);
     }
   }
 
@@ -38,11 +38,11 @@ export class LoginComponent implements OnInit {
           this.tokenStorage.saveUser(data);
           this.isLoginFailed = false;
           this.isLoggedIn = true;
-          this.errorMessage = 'Failed to log in';
-          this.router.navigate(['/home']);
+          window.location.reload();
         }
         else
         {
+          this.errorMessage = 'Failed to log in';
           this.isLoginFailed = false;
         }
 

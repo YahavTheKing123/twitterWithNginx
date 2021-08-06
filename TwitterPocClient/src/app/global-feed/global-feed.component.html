@@ -4,7 +4,10 @@
     </div>
     <div>
       <div class="form-group">
-        <input type="text" (keypress)="getFeed()" [(ngModel)]="username" class="form-control" placeholder="Type username or a partial username to see their tweets...">
+        <input type="text" (keyup)="getFeed()" [(ngModel)]="username" class="form-control" placeholder="Type username or a partial username to see their tweets...">
+        <div class="blockquote-footer">
+          Hint: type something that starts with the letter "a". Some data already exists.
+        </div>
       </div>
       <div *ngIf="errorText" class="alert alert-danger" role="alert">
         {{errorText}}
