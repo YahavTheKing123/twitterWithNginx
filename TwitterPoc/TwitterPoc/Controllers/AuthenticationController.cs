@@ -11,6 +11,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using TwitterPoc.Authorization;
 using TwitterPoc.Data.Exceptions;
 using TwitterPoc.Data.Interfaces;
 using TwitterPoc.Data.Repositories;
@@ -66,18 +67,13 @@ namespace TwitterPoc.Controllers
         public async Task<IActionResult> SignIn(LoginModel userModel)
         {
             _logger.LogInformation($"SignIn request. Username: {userModel?.Username}");
-            /*
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            */
+
             var verifiedUser = await _usersService.GetVerifiedUserAsync(userModel.Username, userModel.Password);
 
             if (verifiedUser != null)
             {
                 var generatedToken = _tokenService.BuildToken(_config["Jwt:Key"].ToString(), _config["Jwt:Issuer"].ToString(), verifiedUser);
-                Response.Cookies.Append("X-Access-Token", generatedToken, new CookieOptions() { HttpOnly = true, SameSite = SameSiteMode.Strict });
+                Response.Cookies.Append(Constants.CookieAccessTokenKey, generatedToken, new CookieOptions() { HttpOnly = true, SameSite = SameSiteMode.Strict });
                 if (generatedToken != null)
                 {
                     return Ok(new ResponseModel(true, generatedToken));
@@ -101,7 +97,7 @@ namespace TwitterPoc.Controllers
         [AllowAnonymous]
         public IActionResult Logout()
         {
-            Response.Cookies.Delete("X-Access-Token");
+            Response.Cookies.Delete(Constants.CookieAccessTokenKey);
             return Ok();
         }
 

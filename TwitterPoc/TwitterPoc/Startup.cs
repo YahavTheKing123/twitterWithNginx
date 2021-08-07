@@ -75,6 +75,7 @@ namespace TwitterPoc
                 });
             });
 
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
             {
                 options.TokenValidationParameters = new TokenValidationParameters
@@ -87,9 +88,21 @@ namespace TwitterPoc
                     ValidAudience = Configuration["Jwt:Issuer"],
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
                 };
-            })
-                .AddCookie(cfg => cfg.SlidingExpiration = true)
-                ;
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var headers = context.Request.Headers;
+                        if (!headers.ContainsKey(Constants.AuthorizationHeaderKey) && context.Request.Cookies.ContainsKey(Constants.CookieAccessTokenKey))
+                        {
+                            context.Request.Headers.Add(Constants.AuthorizationHeaderKey, "Bearer " + context.Request.Cookies[Constants.CookieAccessTokenKey]);
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
+
+            });
+            
 
             services.AddCors(options =>
               {
