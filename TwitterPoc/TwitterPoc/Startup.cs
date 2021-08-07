@@ -109,7 +109,7 @@ namespace TwitterPoc
                   options.AddDefaultPolicy(
                   builder =>
                   {
-                      builder.WithOrigins("http://localhost:4200", "https://localhost:4200", "https://localhost:8080", "http://localhost:8080")
+                      builder.WithOrigins("http://localhost:4200", "https://localhost:4200", "https://localhost:8080", "http://localhost:8080", "https://localhost", "http://localhost")
                       .AllowAnyHeader()
                       .AllowAnyMethod()
                       .AllowCredentials();
