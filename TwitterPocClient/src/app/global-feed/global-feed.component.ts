@@ -38,8 +38,19 @@ export class GlobalFeedComponent implements OnInit {
     setTimeout(()=>{this.errorText = ''}, 3000);
   }
 
+  
+  private debounceTimer:any;
+  getDebounceFeed():void{
+    const delay = 700;
+    clearTimeout(this.debounceTimer);
+    this.debounceTimer = setTimeout(()=>this.getFeed(), delay);
+  }
+
+
   getFeed(): void {
-    this.apiService.getFeed(this.username).subscribe(
+    const username = this.username;
+    console.log('Sending getFeed request: username=' + username);
+    this.apiService.getFeed(username).subscribe(
       data => {
         this.messages = data.messages;
         this.suggestedUsers = this.messages.map(m=>m.username).filter((value, index, self)=>self.indexOf(value) === index);

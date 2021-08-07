@@ -34,6 +34,13 @@ export class MyFeedComponent implements OnInit {
     setTimeout(()=>{this.errorText = ''}, 3000);
   }
 
+  private debounceTimer:any;
+  getDebounceFeed():void{
+    const delay = 700;
+    clearTimeout(this.debounceTimer);
+    this.debounceTimer = setTimeout(()=>this.getFeed(), delay);
+  }
+
   getFeed(): void {
     this.apiService.getMyFeed(this.username).subscribe(
       data => {

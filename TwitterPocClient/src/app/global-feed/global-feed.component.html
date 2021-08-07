@@ -4,7 +4,7 @@
     </div>
     <div>
       <div class="form-group">
-        <input type="text" (keyup)="getFeed()" [(ngModel)]="username" class="form-control" placeholder="Type username or a partial username to see their tweets...">
+        <input type="text" (keyup)="getDebounceFeed()" [(ngModel)]="username" class="form-control" placeholder="Type username or a partial username to see their tweets...">
       </div>
       <div *ngIf="errorText" class="alert alert-danger" role="alert">
         {{errorText}}
