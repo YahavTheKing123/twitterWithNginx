@@ -47,28 +47,30 @@ namespace TwitterPoc.Logic.Services
             await _messagesRepository.Add(messageToAdd);
         }
 
-        public async Task<Feed> GetGlobalFeed(string followeePartialUsername)
+        public async Task<Feed> GetGlobalFeed(string currentUsername, string followeePartialUsername)
         {
             var feed = new Feed();
-            var messages = await _messagesRepository.Get(followeePartialUsername, false, _maxMessagesPerFeed);
-            feed.Add(messages);
+            var messagesTask = _messagesRepository.Get(followeePartialUsername, false, _maxMessagesPerFeed);
+            var followeesTask = _followersRepository.Get(currentUsername);
+            await Task.WhenAll(messagesTask, followeesTask);
+            feed.Add(messagesTask.Result);
+            feed.Followees = followeesTask.Result.ToList();
             return feed;
         }
 
         public async Task<Feed> GetUserFeed(string currentUsername, string followeePartialUsername)
         {
             Feed feed = new Feed();
-
+            feed.Followees = (await _followersRepository.Get(currentUsername)).ToList();
             if (string.IsNullOrEmpty(followeePartialUsername))
             {
                 _logger.LogInformation($"A request to get user feed with an empty followee name. currentUsername={currentUsername}");
 
                 return feed;
             }
-            var followees = await _followersRepository.Get(currentUsername);
-            var relevantFollowees = followees.Where(f => f.Contains(followeePartialUsername)).ToArray();
-            var messageSets = await _messagesRepository.Get(relevantFollowees, true, _maxMessagesPerFeed);
-            feed.Add(messageSets);
+            var relevantFollowees = feed.Followees.Where(f => f.Contains(followeePartialUsername)).ToArray();
+            var messages = await _messagesRepository.Get(relevantFollowees, true, _maxMessagesPerFeed);
+            feed.Add(messages);
             return feed;
         }
     }

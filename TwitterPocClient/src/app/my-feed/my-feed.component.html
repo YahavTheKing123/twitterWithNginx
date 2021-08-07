@@ -10,6 +10,10 @@
         {{errorText}}
       </div>
     </div>
+    <div class="component-padding" *ngIf="followees.length">
+      <h4>These are the users you already follow. Click on any of them to unfollow:</h4>
+      <button type="button" (click)="unfollowUser(u)" class="btn btn-outline-danger unfollow-button" *ngFor="let u of followees">- {{u}}</button>
+    </div>
     <div class="component-padding">
       <hr class="margin-bottom-10">
       <div *ngIf="!messages.length">Feed is empty. You may use Gloabl Feed to follow users.</div>

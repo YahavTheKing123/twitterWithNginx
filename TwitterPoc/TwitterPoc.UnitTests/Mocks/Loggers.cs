@@ -11,6 +11,7 @@ namespace TwitterPoc.UnitTests.Mocks
 {
     public partial class LoggerMock : ILogger<TokenService> { }
     public partial class LoggerMock : ILogger<UsersService> { }
+    public partial class LoggerMock : ILogger<FeedsService> { }
     public partial class LoggerMock : ILogger
     {
         class DisposableClass : IDisposable

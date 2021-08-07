@@ -54,7 +54,7 @@ namespace TwitterPoc.Controllers
         private async Task<IActionResult> GetFeedModel(string username, bool isGloablFeed)
         {
             var getFeedTask = isGloablFeed ?
-                _feedsService.GetGlobalFeed(username) :
+                _feedsService.GetGlobalFeed(User.Identity.Name, username) :
                 _feedsService.GetUserFeed(User.Identity.Name, username);
 
             var feedModel = new FeedModel(await getFeedTask);

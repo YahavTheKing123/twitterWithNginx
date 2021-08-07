@@ -53,7 +53,9 @@ export class GlobalFeedComponent implements OnInit {
     this.apiService.getFeed(username).subscribe(
       data => {
         this.messages = data.messages;
+        let followees = data.followees;
         this.suggestedUsers = this.messages.map(m=>m.username).filter((value, index, self)=>self.indexOf(value) === index);
+        this.suggestedUsers = this.suggestedUsers.filter(suggested => followees.indexOf(suggested) == -1); //Suggests to follow only users which are not already followees.
       },
       err => {
         this.showError(this.utilitiesService.getErrorMessage(err));

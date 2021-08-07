@@ -14,7 +14,7 @@ namespace TwitterPoc.UnitTests
     {
         
         [TestMethod]
-        [Timeout(1115000)] //5 seconds timeout for message time measurement
+        [Timeout(5000)] //5 seconds timeout for message time measurement
         public async Task GetMyFeedTest()
         {
             const string user1 = "user1";
@@ -29,7 +29,7 @@ namespace TwitterPoc.UnitTests
             var followersRepositoryMock = new FollowersRepositoryMock();
             var messagesRepositoryMock = new MessagesRepositoryMock();
             var usersService = new UsersService(usersRepositoryMock, followersRepositoryMock, messagesRepositoryMock, new LoggerMock());
-            var feedsService = new FeedsService(messagesRepositoryMock, followersRepositoryMock);
+            var feedsService = new FeedsService(messagesRepositoryMock, followersRepositoryMock, new ConfigurationMock(), new LoggerMock());
 
             await Task.WhenAll(
                 usersService.RegisterAsync(user1, somePassword),
@@ -44,6 +44,8 @@ namespace TwitterPoc.UnitTests
             var feed = await feedsService.GetUserFeed(user2, user1.Remove(user1.Length-2));
             var messages = feed.Messages.ToList();
             Assert.AreEqual(1, messages.Count);
+            Assert.AreEqual(1, feed.Followees.Count);
+            Assert.AreEqual(user1, feed.Followees.First());
             var singleMessage = messages.First();
 
             Assert.AreEqual(someMessage, singleMessage.Content);
@@ -69,7 +71,7 @@ namespace TwitterPoc.UnitTests
             var followersRepositoryMock = new FollowersRepositoryMock();
             var messagesRepositoryMock = new MessagesRepositoryMock();
             var usersService = new UsersService(usersRepositoryMock, followersRepositoryMock, messagesRepositoryMock, new LoggerMock());
-            var feedsService = new FeedsService(messagesRepositoryMock, followersRepositoryMock);
+            var feedsService = new FeedsService(messagesRepositoryMock, followersRepositoryMock, new ConfigurationMock(), new LoggerMock());
 
             await Task.WhenAll(
                 usersService.RegisterAsync(user1, somePassword),
@@ -85,9 +87,10 @@ namespace TwitterPoc.UnitTests
                 feedsService.AddMessage(user4, someMessage + user4)
                 );
 
-            var feed = await feedsService.GetGlobalFeed(user1.Remove(user1.Length - 2));
+            var feed = await feedsService.GetGlobalFeed(user2, user1.Remove(user1.Length - 2));
             var messages = feed.Messages;
             Assert.AreEqual(4, messages.Count);
+            Assert.AreEqual(0, feed.Followees.Count);
 
             foreach (var message in messages)
             {

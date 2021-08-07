@@ -14,6 +14,9 @@ namespace TwitterPoc.Models
         [DataMember(Name = "messages")]
         public IEnumerable<MessageModel> Messages { get; set; }
 
+        [DataMember(Name = "followees")]
+        public IEnumerable<string> Followees { get; set; }
+
         public FeedModel()
         { 
         }
@@ -21,6 +24,7 @@ namespace TwitterPoc.Models
         public FeedModel(Feed feed)
         {
             Messages = feed.Messages.Select(m => new MessageModel(m.Username, m.Content, m.Time));
+            Followees = feed.Followees;
         }
     }
 }

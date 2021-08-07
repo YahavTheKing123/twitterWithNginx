@@ -11,7 +11,7 @@ namespace TwitterPoc.Logic.Interfaces
     {
         Task AddMessage(string username, string message);
         Task<Feed> GetUserFeed(string currentUsername, string followeeUsername);
-        Task<Feed> GetGlobalFeed(string followeePartialUsername);
+        Task<Feed> GetGlobalFeed(string currentUsername, string followeePartialUsername);
 
     }
 }

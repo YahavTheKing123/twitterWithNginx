@@ -13,6 +13,7 @@ import { UtilitiesService } from '../_services/utilities.service';
 export class MyFeedComponent implements OnInit {
 
   messages:FeedMessage[] = [];
+  followees:string[] = [];
   username:string = '';
   errorText:string = '';
 
@@ -26,7 +27,7 @@ export class MyFeedComponent implements OnInit {
        this.router.navigate(['/register']);
        return;
     }
-
+    this.getFeed();
   }
 
   private showError(message:string):void{
@@ -45,11 +46,35 @@ export class MyFeedComponent implements OnInit {
     this.apiService.getMyFeed(this.username).subscribe(
       data => {
         this.messages = data.messages;
+        this.followees = data.followees;
       },
       err => {
         this.showError(this.utilitiesService.getErrorMessage(err));
       }
     );
+  }
+
+  unfollowUser(username:string): void {
+    this.apiService.unfollowUser(username).subscribe(
+      data => {
+        this.removeFollowee(username);
+      },
+      err => {
+        this.showError(this.utilitiesService.getErrorMessage(err));
+      }
+    );
+
+  }
+
+  private removeFollowee(value:string) {
+    
+    for( var i = 0; i < this.followees.length; i++){ 
+    
+        if ( this.followees[i] === value) { 
+    
+          this.followees.splice(i, 1); 
+        }
+    }
   }
 
 }
