@@ -26,7 +26,7 @@ namespace TwitterPoc.Controllers
             _logger = logger;
         }
 
-        [Route("Follow")]
+        [Route("Follow/{username}")]
         [HttpPost]
         public IActionResult Follow(string username)
         {
@@ -36,7 +36,7 @@ namespace TwitterPoc.Controllers
             return Ok();
         }
 
-        [Route("Unfollow")]
+        [Route("Unfollow/{username}")]
         [HttpPost]
         public IActionResult Unfollow(string username)
         {

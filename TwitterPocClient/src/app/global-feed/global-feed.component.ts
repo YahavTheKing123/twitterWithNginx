@@ -61,4 +61,28 @@ export class GlobalFeedComponent implements OnInit {
     );
   }
 
+  followUser(username:string): void {
+    this.apiService.followUser(username).subscribe(
+      data => {
+        this.removeSuggestedUser(username);
+      },
+      err => {
+        this.showError(this.utilitiesService.getErrorMessage(err));
+      }
+    );
+
+  }
+
+  removeSuggestedUser(value:string) {
+    
+    for( var i = 0; i < this.suggestedUsers.length; i++){ 
+    
+        if ( this.suggestedUsers[i] === value) { 
+    
+          this.suggestedUsers.splice(i, 1); 
+        }
+    
+    }
+  }
+
 }

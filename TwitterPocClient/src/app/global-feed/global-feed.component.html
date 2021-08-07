@@ -12,7 +12,7 @@
     </div>
     <div class="component-padding" *ngIf="suggestedUsers.length">
       <h4>Suggested users to follow</h4>
-      <button type="button" class="btn btn-outline-info follow-button" *ngFor="let u of suggestedUsers">{{u}}</button>
+      <button type="button" (click)="followUser(u)" class="btn btn-outline-info follow-button" *ngFor="let u of suggestedUsers">{{u}}</button>
     </div>
     <div class="component-padding">
       <hr class="margin-bottom-10">
